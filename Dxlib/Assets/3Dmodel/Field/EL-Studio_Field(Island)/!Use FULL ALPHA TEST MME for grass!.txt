@@ -1,0 +1,5 @@
+Assign Alpha test shader(MME) such as “o_SurplusFilter_v0_3” by Otamon to the following materials.
+
+[NATURE]Grass01
+[NATURE]Grass02
+[NATURE]Bush01

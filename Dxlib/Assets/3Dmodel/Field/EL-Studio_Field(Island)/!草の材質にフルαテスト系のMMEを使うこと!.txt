@@ -1,0 +1,6 @@
+以下の材質におたもん氏の「o_SurplusFilter_v0_3」等のα抜きシェーダを割り当てると大変よろしい。
+
+材質リスト
+・[NATURE]Grass01
+・[NATURE]Grass02
+・[NATURE]Bush01
