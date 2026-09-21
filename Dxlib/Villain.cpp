@@ -8,8 +8,8 @@ void Villain::Init(const GameContext& context)
 	centerFrameIndex = MV1SearchFrame(modelHandle, "センター");
 	context.animator->initAnimator(modelHandle, animstate, static_cast<int>(State::Idle));
 	prevTime = GetNowHiPerformanceCount();
-	items.InitItem("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
-	items2.InitItem("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
+	items.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
+	items2.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
 	InitHitboxTable();
 }
 
@@ -35,8 +35,8 @@ void Villain::Update(const GameContext& context)
 	IsLoop = (currentState == State::Idle || currentState == State::Run);
 	AttackMovement(context);
 	context.animator->updateAnimator(modelHandle, animstate, static_cast<int>(currentState), IsLoop, deltaTime);
-	items.AttachItem(modelHandle, "右中指１", 0.0f, -0.3f, 0.0f, 0.0f, 90.0f, 0.0f);
-	items2.AttachItem(modelHandle, "左中指１", 0.0f, -0.3f, 0.0f, 0.0f, 90.0f, 0.0f);
+	items.AttachWeapon(modelHandle, "右中指１", 0.0f, -0.3f, 0.0f, 0.0f, 90.0f, 0.0f);
+	items2.AttachWeapon(modelHandle, "左中指１", 0.0f, -0.3f, 0.0f, 0.0f, 90.0f, 0.0f);
 	FrameLotate();
 	prevTime = currentTime;
 	CollisionUpdate(context);
@@ -54,8 +54,8 @@ void Villain::Draw()
 		// 読み込みに失敗したらエラーログを出す
 		DrawString(260, 300, "Model Load Failed", GetColor(255, 0, 0));
 	}
-	items.DrawItem();
-	items2.DrawItem();
+	items.DrawWeapon();
+	items2.DrawWeapon();
 
 }
 

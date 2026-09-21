@@ -1,20 +1,20 @@
-#include"Items.h"
+#include"Weapon.h"
 
-void Items::InitItem( const TCHAR* ModelSource, const TCHAR* HandleFrame)
+void Weapon::InitWeapon( const TCHAR* ModelSource, const TCHAR* HandleFrame)
 {
 	weaponModel1 = MV1LoadModel(ModelSource);
 	int ItemFrameIndex = MV1SearchFrame(weaponModel1, HandleFrame);
 	if (ItemFrameIndex != -1)
 	{
 		MATRIX ItemGripMat = MV1GetFrameLocalWorldMatrix(weaponModel1, ItemFrameIndex);
-		ItemGripInvMat = MInverse(ItemGripMat);
+		WeaponGripInvMat = MInverse(ItemGripMat);
 	}
 	else 
 	{
-		ItemGripInvMat = MGetIdent();
+		WeaponGripInvMat = MGetIdent();
 	}
 }
-void Items::SetShapes(const TCHAR* Shapename,float ShapeRate)
+void Weapon::SetShapes(const TCHAR* Shapename,float ShapeRate)
 {
 	shapeIndex = MV1SearchShape(weaponModel1, Shapename);
 	if (shapeIndex != -1)
@@ -23,7 +23,7 @@ void Items::SetShapes(const TCHAR* Shapename,float ShapeRate)
 	}
 
 }
-void Items::AttachItem(int playerModelHandle, const char* FrameName, float offsetX, float offsetY,float offsetZ, float rotX, float rotY, float rotZ)
+void Weapon::AttachWeapon(int playerModelHandle, const char* FrameName, float offsetX, float offsetY,float offsetZ, float rotX, float rotY, float rotZ)
 {
 	handBoneIndex = MV1SearchFrame(playerModelHandle, FrameName);
 	if (handBoneIndex == -1)
@@ -42,7 +42,7 @@ void Items::AttachItem(int playerModelHandle, const char* FrameName, float offse
 	MATRIX rotMatZ = MGetRotZ(rotZ * DX_PI_F / 180.0f);
 	// çsóÒÇê≥ÇµÇ¢èáî‘Ç≈çáê¨Ç∑ÇÈ
 	// Ç‹Ç∏éùÇøéËÇå¥ì_Ç…çáÇÌÇπÇÈ
-	MATRIX finalMat = ItemGripInvMat;
+	MATRIX finalMat = WeaponGripInvMat;
 	//éùÇøéËÇíÜêSÇ…âÒì]Ç≥ÇπÇÈ
 
 	finalMat = MMult(finalMat, rotMatZ);
@@ -57,7 +57,7 @@ void Items::AttachItem(int playerModelHandle, const char* FrameName, float offse
 	MV1SetMatrix(weaponModel1, finalMat);
 }
 
-void Items::DrawItem()
+void Weapon::DrawWeapon()
 {
 	if (weaponModel1 != -1)
 	{

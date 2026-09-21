@@ -2,7 +2,7 @@
 #include "DxLib.h"
 #include <cmath>
 #include <algorithm>
-#include"Items.h"
+#include"Weapon.h"
 #include"GameObject.h"
 #include "Field.h"
 #include "Animator.h"
@@ -17,8 +17,7 @@ public:
 	void Init(const GameContext& context) override;
 	void Update(const GameContext& context) override;
 	void Draw() override;
-	const Items& GetWeaponItem() const { return items; }
-	const Items& GetWeaponItem2() const { return items2; }
+
 	~Villain() {};
 	enum class State
 	{
@@ -45,8 +44,8 @@ private:
 	void CollisionUpdate(const GameContext& context);
 	Animstate animstate;
 
-	Items items;
-	Items items2;
+	Weapon items;
+	Weapon items2;
 	State currentState = State::Idle;
 	float velocityY = 0.0f;
 	bool isGround = true;

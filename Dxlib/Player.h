@@ -2,7 +2,7 @@
 #include "DxLib.h"
 #include <cmath>
 #include <algorithm>
-#include "Items.h"
+#include "Weapon.h"
 #include"GameObject.h"
 #include "Field.h"
 #include "InputValidation.h"
@@ -81,9 +81,9 @@ private:
 	State currentState = State::Idle;
 	float parryTimer = 0.0f;
 	//--- アイテム管理 ---
-	Items SwordItems;
-	Items GunItemsRight;
-	Items GunItemsLeft;
+	Weapon SwordItems;
+	Weapon GunItemsRight;
+	Weapon GunItemsLeft;
 	//--- 物理計算関連 ---
 	bool isGround = true;
 	float groundY = 0.0f;

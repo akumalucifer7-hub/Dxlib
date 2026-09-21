@@ -9,9 +9,9 @@ void Player::Init(const GameContext& context)
 	// 初期ステートをintにキャストして渡す
 	context.animator->initAnimator(modelHandle, animstate, static_cast<int>(State::Idle));
 	centerFrameIndex = MV1SearchFrame(modelHandle, "センター");
-	SwordItems.InitItem( "Assets/3Dmodel/weapons/匙式大直剣/匙式大直剣.pmx", "グリップ1");
-	GunItemsRight.InitItem("Assets/3Dmodel/weapons/DesertEagle_MMD/DesertEagle.pmx", "全ての親");
-	GunItemsLeft.InitItem("Assets/3Dmodel/weapons/DesertEagle_MMD/DesertEagle.pmx", "全ての親");
+	SwordItems.InitWeapon( "Assets/3Dmodel/weapons/匙式大直剣/匙式大直剣.pmx", "グリップ1");
+	GunItemsRight.InitWeapon("Assets/3Dmodel/weapons/DesertEagle_MMD/DesertEagle.pmx", "全ての親");
+	GunItemsLeft.InitWeapon("Assets/3Dmodel/weapons/DesertEagle_MMD/DesertEagle.pmx", "全ての親");
 	MV1SetLoadModelUsePhysicsMode(DX_LOADMODEL_PHYSICS_REALTIME);
 	pos = VGet(0.0f, 26.0f, -320.0f);
 	GunItemsLeft.SetShapes("ステンレス", 1.0f);
@@ -411,13 +411,13 @@ void Player::AttatchItems()
 {
 	if (isMeleeAttacking)
 	{
-		SwordItems.AttachItem(modelHandle, "右中指１", 0.2f, -0.4f, 0.0f, 0.0f, 0.0f, -90.0f);
+		SwordItems.AttachWeapon(modelHandle, "右中指１", 0.2f, -0.4f, 0.0f, 0.0f, 0.0f, -90.0f);
 	}
 	else
 	{
-		SwordItems.AttachItem(modelHandle, "上半身", -4.0f, 6.5f, 1.5f, -135.0f, 90.0f, 0.0f);
-		GunItemsRight.AttachItem(modelHandle, "右中指１", 0.3f, -0.3f, -0.15f, 0.0f, 90.0, -90.0f);
-		GunItemsLeft.AttachItem(modelHandle, "左中指１", -0.3f, -0.3f, -0.15f, 0.0f, -90.0, 90.0f);
+		SwordItems.AttachWeapon(modelHandle, "上半身", -4.0f, 6.5f, 1.5f, -135.0f, 90.0f, 0.0f);
+		GunItemsRight.AttachWeapon(modelHandle, "右中指１", 0.3f, -0.3f, -0.15f, 0.0f, 90.0, -90.0f);
+		GunItemsLeft.AttachWeapon(modelHandle, "左中指１", -0.3f, -0.3f, -0.15f, 0.0f, -90.0, 90.0f);
 	}
 }
 // アニメーションの更新
@@ -452,10 +452,10 @@ void Player::Draw()
 		// 読み込みに失敗したらエラーログを出す
 		DrawString(260, 300, "Model Load Failed", GetColor(255, 0, 0));
 	}
-	SwordItems.DrawItem();
+	SwordItems.DrawWeapon();
 	if (!isMeleeAttacking)
 	{
-		GunItemsRight.DrawItem();GunItemsLeft.DrawItem();
+		GunItemsRight.DrawWeapon();GunItemsLeft.DrawWeapon();
 	}
 } 
 
