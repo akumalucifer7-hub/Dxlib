@@ -134,6 +134,12 @@
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InputValidation.cpp" />
+    <ClCompile Include="StateAttack.cpp" />
+    <ClCompile Include="StateEvade.cpp" />
+    <ClCompile Include="StateFall.cpp" />
+    <ClCompile Include="StateIdle.cpp" />
+    <ClCompile Include="StateJump.cpp" />
+    <ClCompile Include="StateRun.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="UserInterface.cpp" />
@@ -154,6 +160,12 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="InputValidation.h" />
     <ClInclude Include="IPlayerState.h" />
+    <ClInclude Include="StateAttack.h" />
+    <ClInclude Include="StateEvade.h" />
+    <ClInclude Include="StateFall.h" />
+    <ClInclude Include="StateIdle.h" />
+    <ClInclude Include="StateJump.h" />
+    <ClInclude Include="StateRun.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="UserInterfaceh.h" />

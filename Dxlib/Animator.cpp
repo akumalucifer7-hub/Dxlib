@@ -46,7 +46,7 @@ void Animator::updateAnimator(int modele1, Animstate& state, int nextAnimIndex, 
 	}
 
 	// 再生時間を進める
-	state.PlayTime += 45.0f * deltaTime;
+	state.PlayTime += 60.0f * deltaTime;
 
 	// 再生時間がアニメーションの総再生時間に達したらループ判定に応じて処理
 	if (state.PlayTime >= state.TotalTime && state.TotalTime > 0.0f)

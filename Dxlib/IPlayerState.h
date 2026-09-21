@@ -1,4 +1,5 @@
 #pragma once
+#include "DxLib.h"
 
 // 前方宣言
 class Player;
