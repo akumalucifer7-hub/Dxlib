@@ -12,12 +12,19 @@ void StateEvade::OnEnter(Player& player, const GameContext& context)
     float lx = 0.0f;
     float ly = 0.0f;
     context.input->GetLeftStick(lx, ly, 0.2f);
+    float keyX = 0.0f;
+    float keyY = 0.0f;
+    if (context.input->IsKeyPressed(KEY_INPUT_W) || context.input->IsKeyPressed(KEY_INPUT_UP)) { keyY = 1.0f; }
+    if (context.input->IsKeyPressed(KEY_INPUT_S) || context.input->IsKeyPressed(KEY_INPUT_DOWN)) { keyY = -1.0f; }
+    if (context.input->IsKeyPressed(KEY_INPUT_A) || context.input->IsKeyPressed(KEY_INPUT_LEFT)) { keyX = -1.0f; }
+    if (context.input->IsKeyPressed(KEY_INPUT_D) || context.input->IsKeyPressed(KEY_INPUT_RIGHT)) { keyX = 1.0f; }
 
-    if (context.input->IsKeyPressed(KEY_INPUT_W) || context.input->IsKeyPressed(KEY_INPUT_UP)) { ly = 1.0f; }
-    if (context.input->IsKeyPressed(KEY_INPUT_S) || context.input->IsKeyPressed(KEY_INPUT_DOWN)) { ly = -1.0f; }
-    if (context.input->IsKeyPressed(KEY_INPUT_A) || context.input->IsKeyPressed(KEY_INPUT_LEFT)) { lx = -1.0f; }
-    if (context.input->IsKeyPressed(KEY_INPUT_D) || context.input->IsKeyPressed(KEY_INPUT_RIGHT)) { lx = 1.0f; }
-
+    // キーボード入力があれば優先して置き換え
+    if (keyX != 0.0f || keyY != 0.0f)
+    {
+        lx = keyX;
+        ly = keyY;
+    }
     if (lx != 0.0f || ly != 0.0f)
     {
         // 入力方向がある場合：カメラ向きに応じた入力方向へ回転して進む
@@ -36,7 +43,7 @@ void StateEvade::OnEnter(Player& player, const GameContext& context)
     }
 
     // 3. 回避初速の設定
-    evadeSpeed = 8.0f;
+    evadeSpeed = 6.0f;
 
     // 4. 無敵フラグを有効化（※Player側で被弾判定をスキップするフラグ）
     //player.SetIsInvincible(true);
