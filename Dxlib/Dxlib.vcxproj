@@ -131,10 +131,12 @@
   <ItemGroup>
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InputValidation.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerCollision.cpp" />
     <ClCompile Include="StateAttack.cpp" />
     <ClCompile Include="StateEvade.cpp" />
     <ClCompile Include="StateFall.cpp" />
@@ -143,6 +145,7 @@
     <ClCompile Include="StateRun.cpp" />
     <ClCompile Include="UserInterface.cpp" />
     <ClCompile Include="Villain.cpp" />
+    <ClCompile Include="VillainCollision.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="Winmain.cpp" />
   </ItemGroup>
@@ -151,6 +154,7 @@
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AttackHitbox.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DebugColor.h" />
     <ClInclude Include="DebugRenderer.h" />
@@ -158,9 +162,12 @@
     <ClInclude Include="GameContext.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="ICharacterState.h" />
+    <ClInclude Include="IController.h" />
     <ClInclude Include="InputValidation.h" />
     <ClInclude Include="IPlayerState.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerCollision.h" />
     <ClInclude Include="StateAttack.h" />
     <ClInclude Include="StateEvade.h" />
     <ClInclude Include="StateFall.h" />
@@ -169,6 +176,7 @@
     <ClInclude Include="StateRun.h" />
     <ClInclude Include="UserInterfaceh.h" />
     <ClInclude Include="Villain.h" />
+    <ClInclude Include="VillainCollision.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="Winmain.h" />
   </ItemGroup>

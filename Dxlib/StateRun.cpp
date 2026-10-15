@@ -67,7 +67,7 @@ void StateRun::Update(Player& player, const GameContext& context)
         player.SetPlayerAngle(newAngle);
 
         // 走りの速度（2.5f）を適用して位置を計算
-        float runSpeed = 2.5f;
+        float runSpeed = 2.0f;
         VECTOR moveOffset = VScale(moveVec, runSpeed);
 
         VECTOR currentPos = player.GetPos();

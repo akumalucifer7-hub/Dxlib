@@ -106,6 +106,7 @@ void StateEvade::Update(Player& player, const GameContext& context)
         return;
     }
 }
+
 void StateEvade::OnExit(Player& player, const GameContext& context)
 {
 	// 回避状態終了時の処理（必要に応じて）

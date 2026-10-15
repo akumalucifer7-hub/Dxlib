@@ -114,7 +114,7 @@ void GameScene::DrawGame()
 	int drawY = 20;
 
 	DrawString(drawX, drawY, posText, GetColor(255, 0, 0));
-	if (player.GetIsHit())
+	if (//player.GetIsHit())
 	{
 		DrawString(260, 500, "Hit!", GetColor(255, 0, 0));
 	}
@@ -122,14 +122,14 @@ void GameScene::DrawGame()
 	{
 		DrawString(260, 500, "Not Hit!", GetColor(0, 255, 0));
 	}
-	if(villain.GetIsHit())
+	if( villain.GetIsAttackingHit() )
 	{
 		DrawString(260, 550, "Villain Hit!", GetColor(255, 0, 0));
 	}
 	if (isDebugDrawMode) {
 		SetUseZBuffer3D(FALSE);
 
-		player.DrawDebug();
+		//player.DrawDebug();
 		villain.DrawDebug();
 
 		SetUseZBuffer3D(TRUE); 
