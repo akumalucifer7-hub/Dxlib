@@ -1,16 +1,13 @@
 #pragma once
-#include"IPlayerState.h"
-#include"Player.h"
+#include "ICharacterState.h"
 
-class StateAttack : public IPlayerState
+class StateAttack : public ICharacterState
 {
 public:
+    void OnEnter(Character& owner, const GameContext& context) override;
+    void Update(Character& owner, const GameContext& context) override;
+    void OnExit(Character& owner, const GameContext& context) override;
 
-    StateAttack(int comboStep = 1, Player::State attackState = Player::State::Attack1);
-
-	void OnEnter(Player& player, const GameContext& context) override;
-	void Update(Player& player, const GameContext& context) override;
-	void OnExit(Player& player, const GameContext& context) override;
 
 private:
     int comboStep;                      // 現在のコンボ段階 (1, 2, 3...)

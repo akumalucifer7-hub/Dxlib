@@ -1,18 +1,18 @@
 #include "StateIdle.h"
-#include "Character.h"
 #include "StateRun.h"
 #include "StateAttack.h"
+#include "Character.h"
 
 void StateIdle::OnEnter(Character& owner, const GameContext& context)
 {
-    // アニメーションID指定（0 = Idle と定義）
+    // アニメーションID指定（例: 0 = Idle）
     owner.SetAnimation(0, true);
 }
 
 void StateIdle::Update(Character& owner, const GameContext& context)
 {
-    // コントローラー/AIから現在のコマンドを取得
-    // ※ Character 内に IController へのスマートポインタを持たせる構成にすると非常にスマートです
+    // コントローラー/AIからコマンドを取得
+    if (!owner.GetController()) return;
     CommandState cmd = owner.GetController()->GetCommand(owner, context);
 
     // 1. 攻撃判定
@@ -28,4 +28,8 @@ void StateIdle::Update(Character& owner, const GameContext& context)
         owner.ChangeState(std::make_unique<StateRun>(), context);
         return;
     }
+}
+
+void StateIdle::OnExit(Character& owner, const GameContext& context)
+{
 }

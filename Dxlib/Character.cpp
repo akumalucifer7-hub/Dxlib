@@ -2,9 +2,10 @@
 #include "ICharacterState.h"
 #include "GameContext.h"
 #include"Field.h"
+
 void Character::Update(const GameContext& context)
 {
-    float deltaTime = CalculateDeltaTime();
+     deltaTime = CalculateDeltaTime();
 
     // 1. 物理計算（接地・重力）
     UpdatePhysics(context);
@@ -79,4 +80,13 @@ void Character::Draw()
     {
         MV1DrawModel(modelHandle);
     }
+}
+
+void Character::AttatchItems()
+{
+	// デフォルトでは何もしない
+}
+void Character::FrameLotate()
+{
+	// デフォルトでは何もしない
 }

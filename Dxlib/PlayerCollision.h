@@ -16,7 +16,7 @@ public:
 
     void Init();
     void Update(Player& player, const GameContext& context, float deltaTime);
-    void DrawDebug(const Player& player);
+    void DrawDebug(const Player& player) const;
 
     // 被弾用AABB (Hurtbox) の取得
     AABB GetHurtboxAABB(const VECTOR& pos, float playerAngle) const;

@@ -8,15 +8,15 @@ void Villain::Init(const GameContext& context)
 	centerFrameIndex = MV1SearchFrame(modelHandle, "センター");
 	context.animator->initAnimator(modelHandle, animstate, static_cast<int>(State::Idle));
 
-	items.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
-	items2.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
+	weapon1.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
+	weapon2.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
 
 	collision.Init();
 }
 
 void Villain::Update(const GameContext& context)
 {
-	float deltaTime = CalculateDeltaTime();
+	 deltaTime = CalculateDeltaTime();
 
 	// 被弾アニメーションの終了判定
 	if (currentState == State::Damage1)
@@ -112,8 +112,8 @@ void Villain::Draw()
 	{
 		DrawString(260, 300, "Model Load Failed", GetColor(255, 0, 0));
 	}
-	items.DrawWeapon();
-	items2.DrawWeapon();
+	weapon1.DrawWeapon();
+	weapon2.DrawWeapon();
 }
 
 void Villain::DrawDebug()

@@ -19,7 +19,7 @@ void Player::Init(const GameContext& context)
     GunItemsLeft.SetShapes("ステンレス", 1.0f);
 
     // 当たり判定クラスの初期化
-    collision.Init();
+    playercollision.Init();
 
     // 初期ステート（StateIdle）の設定
     ChangeState(std::make_unique<StateIdle>(), context);
@@ -28,6 +28,9 @@ void Player::Init(const GameContext& context)
 
 void Player::Update(const GameContext& context)
 {
+
+    deltaTime = CalculateDeltaTime();
+
     // 基底クラス（Character）の物理計算・ステート更新・アニメーション処理を実行
     Character::Update(context);
 
@@ -36,7 +39,7 @@ void Player::Update(const GameContext& context)
     AttatchItems();
 
     // 当たり判定・押し出し処理の更新
-    collision.Update(*this, context, deltaTime);
+    playercollision.Update(*this, context, deltaTime);
 }
 
 void Player::OnTakeDamage()
@@ -85,9 +88,9 @@ void Player::Draw()
     }
 }
 
-void Player::DrawDebug()
+void Player::DrawDebug() const
 {
     // 当たり判定のデバッグ枠を描画
-    collision.DrawDebug(*this);
+    playercollision.DrawDebug(*this);
     DrawFormatString(10, 500, GetColor(255, 255, 255), "AnimID: %d, AttachIndex: %d", currentAnimID, animstate.AttachIndex);
 }

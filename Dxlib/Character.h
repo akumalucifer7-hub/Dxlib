@@ -3,6 +3,7 @@
 #include "DxLib.h"
 #include "Animator.h"
 #include "Collision.h"
+#include "IController.h"
 #include <memory>
 
 class ICharacterState;
@@ -19,6 +20,10 @@ public:
 
     // ステート遷移
     void ChangeState(std::unique_ptr<ICharacterState> newState, const GameContext& context);
+
+	// --- キャラクター固有の操作 ---
+     void AttatchItems();
+     void FrameLotate();
 
     // --- アクセサ・共通操作 ---
     int GetModelHandle() const { return modelHandle; }
@@ -62,11 +67,14 @@ protected:
     std::unique_ptr<ICharacterState> currentState;
     Animstate animstate;
 
+	float deltaTime = 0.0f;
     float angle = DX_PI_F;
     float velocityY = 0.0f;
     bool isGround = true;
     float gravity = -0.8f;
+
     bool isMeleeAttacking = false;
+	bool IsInvincible = false;
 
     int currentAnimID = 0;
     bool isAnimLoop = true;

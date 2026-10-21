@@ -3,7 +3,7 @@
 void Field::Init(const GameContext& context)
 {
 	// フィールドの初期化
-	modelHandle = MV1LoadModel("Assets/3Dmodel/Field/Ruin/02_Ruin_Main.pmx");
+	modelHandle = MV1LoadModel("Assets/3Dmodel/Field/美術館中庭/美術館中庭.pmx");
 	MV1SetupCollInfo(FieldModel1, -1, 8, 8, 8);
 	SkyDome1= MV1LoadModel("Assets/3Dmodel/Field/Ruin/01_Ruin_Sky.pmx");
 }
