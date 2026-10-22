@@ -1,7 +1,8 @@
 #pragma once
-#include "IPlayerState.h"
+#include "ICharacterState.h"
 #include "IController.h"
-class StateIdle : public IPlayerState
+
+class StateIdle : public ICharacterState
 {
 public:
     void OnEnter(Character& owner, const GameContext& context) override;

@@ -165,7 +165,6 @@
     <ClInclude Include="ICharacterState.h" />
     <ClInclude Include="IController.h" />
     <ClInclude Include="InputValidation.h" />
-    <ClInclude Include="IPlayerState.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCollision.h" />
     <ClInclude Include="StateAttack.h" />

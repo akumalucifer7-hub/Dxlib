@@ -6,7 +6,7 @@
 void StateEvade::OnEnter(Player& player, const GameContext& context)
 {
     // 1. 回避アニメーションの再生（非ループ）
-    player.SetAnimation(Player::State::Evade, false);
+    player.SetAnimation(Player::StateID::Evade, false);
 
     // 2. 移動方向の決定
     float lx = 0.0f;

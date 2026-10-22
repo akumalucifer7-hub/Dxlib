@@ -2,6 +2,7 @@
 #include "StateRun.h"
 #include "StateAttack.h"
 #include "Character.h"
+#include "IController.h"
 
 void StateIdle::OnEnter(Character& owner, const GameContext& context)
 {

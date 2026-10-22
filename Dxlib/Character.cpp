@@ -86,6 +86,7 @@ void Character::AttatchItems()
 {
 	// デフォルトでは何もしない
 }
+
 void Character::FrameLotate()
 {
 	// デフォルトでは何もしない

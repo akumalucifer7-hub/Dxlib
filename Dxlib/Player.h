@@ -5,7 +5,7 @@
 class Player : public Character
 {
 public:
-    enum StateID { Idle, Run, Jump, Fall, Attack1, Evade, MAX };
+    enum StateID { Idle, Run, Jump, Fall, Attack1, Evade, Damage1, MAX };
 
     void Init(const GameContext& context) override;
     void Update(const GameContext& context) override;

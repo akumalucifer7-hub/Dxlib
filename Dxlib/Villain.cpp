@@ -6,7 +6,7 @@ void Villain::Init(const GameContext& context)
 	MV1SetLoadModelUsePhysicsMode(DX_LOADMODEL_PHYSICS_DISABLE);
 	modelHandle = MV1LoadModel("Assets/3Dmodel/koharu_rikka_natsufuku_mmd_vrm/KoharuRikka_Natsufuku.pmx");
 	centerFrameIndex = MV1SearchFrame(modelHandle, "センター");
-	context.animator->initAnimator(modelHandle, animstate, static_cast<int>(State::Idle));
+	context.animator->initAnimator(modelHandle, animstate, static_cast<int>(StateID::Idle));
 
 	weapon1.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
 	weapon2.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");

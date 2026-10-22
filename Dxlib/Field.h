@@ -6,6 +6,7 @@
 class Field : public GameObject
 {
 public:
+
 	void Init(const GameContext& context) override;
 	void Update(const GameContext& context) override;
 	void Draw() override;

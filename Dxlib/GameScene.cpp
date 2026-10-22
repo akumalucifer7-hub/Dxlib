@@ -114,7 +114,7 @@ void GameScene::DrawGame()
 	int drawY = 20;
 
 	DrawString(drawX, drawY, posText, GetColor(255, 0, 0));
-	if (//player.GetIsHit())
+	if (player.GetIsHit())
 	{
 		DrawString(260, 500, "Hit!", GetColor(255, 0, 0));
 	}

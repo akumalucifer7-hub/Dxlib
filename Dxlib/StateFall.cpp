@@ -4,7 +4,7 @@
 void StateFall::OnEnter(Player& player, const GameContext& context)
 {
 	// Fallアニメーションの再生設定など
-	player.SetAnimation(Player::State::Fall, true);
+	player.SetAnimation(Player::StateID::Fall, true);
 	// StateFall自身が、Fallアニメーション(Player::State::Fall)を再生するようAnimatorに指示する
 	
 }

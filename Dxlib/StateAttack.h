@@ -11,7 +11,7 @@ public:
 
 private:
     int comboStep;                      // 現在のコンボ段階 (1, 2, 3...)
-    Player::State attackAnimState;      // 再生するアニメーションState
+    Player::StateID attackAnimState;      // 再生するアニメーションState
 
     bool isNextComboRequested;          // 次の連撃入力が先行入力されたか
     bool canAcceptComboInput;           // コンボ先行入力を受け付けるタイミングか

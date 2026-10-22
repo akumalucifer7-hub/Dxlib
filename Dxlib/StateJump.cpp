@@ -6,7 +6,7 @@
 void StateJump::OnEnter(Player& player, const GameContext& context)
 {
 	// Jumpアニメーションの再生設定
-	player.SetAnimation(Player::State::Jump, false);
+	player.SetAnimation(Player::StateID::Jump, false);
 	
 	// ジャンプ開始時の初期速度を設定
 	player.SetVelocityY(12.5f); // 例: 上方向に12.5fの速度を与える
@@ -21,9 +21,7 @@ void StateJump::OnEnter(Player& player, const GameContext& context)
 void StateJump::Update(Player& player, const GameContext& context)
 {
 	// --- 空中攻撃の割り込み判定 ---
-	bool isAttackPressed = context.input->IsMouseTrigger(InputValidation::Mouse::Left) ||
-		context.input->IsButtonTrigger(XINPUT_BUTTON_X);
-
+	
 	// --- 状態遷移判定 ---
 	// 頂点に達し、Y軸速度が下向きになったら落下状態へ遷移
 	if (player.GetVelocityY() < 0.0f)

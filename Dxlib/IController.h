@@ -1,6 +1,5 @@
 #pragma once
 #include "DxLib.h"
-#include "Character.h"
 
 struct CommandState
 {
@@ -9,6 +8,7 @@ struct CommandState
     bool isAttack = false;  // 攻撃要求
     bool isEvade = false;   // 回避要求
     bool isJump = false;    // ジャンプ要求
+	bool isSpecial = false; // 特殊行動要求
 };
 
 class IController

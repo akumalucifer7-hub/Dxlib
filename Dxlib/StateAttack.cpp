@@ -2,15 +2,8 @@
 #include "StateIdle.h"
 #include "StateRun.h"
 #include "Player.h"
-
-StateAttack::StateAttack(int comboStep, Player::State attackState): comboStep(comboStep)
-    , attackAnimState(attackState)
-    , isNextComboRequested(false)
-    , canAcceptComboInput(false)
-    , attackTimer(0.0f)
-    , stepForwardSpeed(0.0f)
-{
-}
+#include"Field.h"
+#include"InputValidation.h"
 
 void StateAttack::OnEnter(Player& player, const GameContext& context)
 {
@@ -30,7 +23,7 @@ void StateAttack::Update(Player& player, const GameContext& context)
     if (stepForwardSpeed > 0.0f&& (normTime >= 0.3f && normTime <= 0.5f))
     {
         // 前方に踏み込む移動処理
-        MATRIX rotMat = MGetRotY(player.GetPlayerAngle());
+        MATRIX rotMat = MGetRotY(player.GetAngle());
         VECTOR forwardVec = VTransform(VGet(0.0f, 0.0f, -1.0f), rotMat); // モデルの正面方向
         VECTOR moveOffset = VScale(forwardVec, stepForwardSpeed);
 
@@ -59,17 +52,17 @@ void StateAttack::Update(Player& player, const GameContext& context)
     if (normTime > 0.9f && isNextComboRequested)
     {// 次のコンボ段階へ遷移
         int nextComboStep = comboStep + 1;
-        Player::State nextAttackState = Player::State::Attack1;
+        Player::StateID nextAttackState = Player::StateID::Attack1;
         switch (nextComboStep)
         {
         case 2:
-            nextAttackState = Player::State::Attack2;
+            nextAttackState = Player::StateID::Attack2;
             break;
         case 3:
-            nextAttackState = Player::State::Attack3;
+            nextAttackState = Player::StateID::Attack3;
             break;
         case 4:
-            nextAttackState = Player::State::Attack4;
+            nextAttackState = Player::StateID::Attack4;
             break;
         default:
             // コンボが最大段階に達した場合は Idle に戻す
