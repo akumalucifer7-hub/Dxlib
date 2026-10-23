@@ -19,10 +19,10 @@ public:
     void DrawDebug(const Villain& villain);
 
     // 敵の被弾ボックス (Hurtbox)
-    AABB GetHurtboxAABB(const VECTOR& pos, float playerAngle) const;
+    AABB GetHurtboxAABB(const Villain& villain, AABB& outAABB, const GameContext& context) const;
 
     // 敵の攻撃ボックス (Hitbox)
-    bool GetCurrentAttackAABB(const Villain& villain, AABB& outAABB) const;
+    bool GetCurrentAttackAABB(const Villain& villain, AABB& outAABB, const GameContext& context) const;
 
     // フラグ取得
     bool GetIsAttackingHit() const { return isAttackingHit; } // 自分の攻撃がプレイヤーに当たったか

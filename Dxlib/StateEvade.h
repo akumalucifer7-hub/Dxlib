@@ -1,12 +1,12 @@
 #pragma once
-#include "IPlayerState.h"
+#include "ICharacterState.h"
 
-class StateEvade : public IPlayerState
+class StateEvade : public ICharacterState
 {
 public:
-    void OnEnter(Player& player, const GameContext& context) override;
-    void Update(Player& player, const GameContext& context) override;
-    void OnExit(Player& player, const GameContext& context) override;
+    void OnEnter(Character& character, const GameContext& context) override;
+    void Update(Character& character, const GameContext& context) override;
+    void OnExit(Character& character, const GameContext& context) override;
 
 private:
     float evadeSpeed;      // 回避の移動速度（初速）

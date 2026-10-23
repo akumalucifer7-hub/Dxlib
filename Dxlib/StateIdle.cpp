@@ -7,7 +7,7 @@
 void StateIdle::OnEnter(Character& owner, const GameContext& context)
 {
     // アニメーションID指定（例: 0 = Idle）
-    owner.SetAnimation(0, true);
+    owner.SetAnimation(static_cast<int>(Character::CharacterStateID::Idle), true);
 }
 
 void StateIdle::Update(Character& owner, const GameContext& context)

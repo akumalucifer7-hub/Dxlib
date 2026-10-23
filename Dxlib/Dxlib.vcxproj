@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIController.cpp" />
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Character.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="InputValidation.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerCollision.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="StateAttack.cpp" />
     <ClCompile Include="StateEvade.cpp" />
     <ClCompile Include="StateFall.cpp" />
@@ -151,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABBTransform.h" />
+    <ClInclude Include="AIController.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AttackHitbox.h" />
     <ClInclude Include="Camera.h" />
@@ -167,6 +170,7 @@
     <ClInclude Include="InputValidation.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCollision.h" />
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="StateAttack.h" />
     <ClInclude Include="StateEvade.h" />
     <ClInclude Include="StateFall.h" />

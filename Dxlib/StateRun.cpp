@@ -1,29 +1,31 @@
-#include"IPlayerState.h"
+#include"ICharacterState.h"
 #include"StateRun.h"
 #include"StateIdle.h"
 #include"StateJump.h"
 #include"StateFall.h"
+#include"Character.h"
 #include"Player.h"
 
-void StateRun::OnEnter(Player& player, const GameContext& context)
+
+void StateRun::OnEnter(Character& character, const GameContext& context)
 {
 	// Runアニメーションの再生設定など
-	player.SetAnimation(Player::State::Run, true);
+	character.SetAnimation(Character::StateID::Run, true);
 }
 
-void StateRun::Update(Player& player, const GameContext& context)
+void StateRun::Update(Character& character, const GameContext& context)
 {
     // --- 1. 落下判定 ---
-    if (!player.GetIsGround() && player.GetVelocityY() < 0.0f)
+    if (!character.GetIsGround() && character.GetVelocityY() < 0.0f)
     {
-        player.ChangeState(std::make_unique<StateFall>(), context);
+        character.ChangeState(std::make_unique<StateFall>(), context);
         return;
     }
 
     // --- 2. ジャンプ判定 ---
-    if ((context.input->IsKeyTrigger(KEY_INPUT_SPACE) || context.input->IsButtonTrigger(XINPUT_BUTTON_A)) && player.GetIsGround())
+    if ((context.input->IsKeyTrigger(KEY_INPUT_SPACE) || context.input->IsButtonTrigger(XINPUT_BUTTON_A)) && character.GetIsGround())
     {
-        player.ChangeState(std::make_unique<StateJump>(), context);
+        character.ChangeState(std::make_unique<StateJump>(), context);
         return;
     }
 
@@ -41,7 +43,7 @@ void StateRun::Update(Player& player, const GameContext& context)
     // 入力が一切ない場合のみ Idle へ遷移
     if (lx == 0.0f && ly == 0.0f)
     {
-        player.ChangeState(std::make_unique<StateIdle>(), context);
+        character.ChangeState(std::make_unique<StateIdle>(), context);
         return;
     }
 
@@ -79,7 +81,7 @@ void StateRun::Update(Player& player, const GameContext& context)
     }
 }
 
-void StateRun::OnExit(Player& player, const GameContext& context)
+void StateRun::OnExit(Character& character, const GameContext& context)
 {
 	// Run状態終了時の処理（もしあれば）
 }

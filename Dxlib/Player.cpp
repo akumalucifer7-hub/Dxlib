@@ -23,7 +23,7 @@ void Player::Init(const GameContext& context)
 
     // 初期ステート（StateIdle）の設定
     ChangeState(std::make_unique<StateIdle>(), context);
-    context.animator->initAnimator(modelHandle, animstate, static_cast<int>(StateID::Idle));
+    context.animator->initAnimator(modelHandle, animstate, static_cast<int>(Character::CharacterStateID::Idle));
 }
 
 void Player::Update(const GameContext& context)
@@ -80,6 +80,7 @@ void Player::Draw()
     Character::Draw();
 
     // 武器の描画
+
     SwordItems.DrawWeapon();
     if (!isMeleeAttacking)
     {

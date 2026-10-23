@@ -2,11 +2,11 @@
 #include"Player.h"
 #include"StateIdle.h"
 #include"StateRun.h"
-
-void StateEvade::OnEnter(Player& player, const GameContext& context)
+#include"Camera.h"
+void StateEvade::OnEnter(Character& character, const GameContext& context)
 {
     // 1. 回避アニメーションの再生（非ループ）
-    player.SetAnimation(Player::StateID::Evade, false);
+    character.SetAnimation(Character::StateID::Evade, false);
 
     // 2. 移動方向の決定
     float lx = 0.0f;
@@ -33,12 +33,12 @@ void StateEvade::OnEnter(Player& player, const GameContext& context)
         moveDir = VNorm(VTransform(localMoveVec, cameraRotMat));
 
         float newAngle = atan2f(moveDir.x, moveDir.z) + DX_PI_F;
-        player.SetPlayerAngle(newAngle);
+        player.SetAngle(newAngle);
     }
     else
     {
         // 入力がない場合：プレイヤーが現在向いている正面方向へ進む
-        MATRIX rotMat = MGetRotY(player.GetPlayerAngle());
+        MATRIX rotMat = MGetRotY(player.GetAngle());
         moveDir = VTransform(VGet(0.0f, 0.0f, -1.0f), rotMat);
     }
 
@@ -49,21 +49,21 @@ void StateEvade::OnEnter(Player& player, const GameContext& context)
     //player.SetIsInvincible(true);
 }
 
-void StateEvade::Update(Player& player, const GameContext& context)
+void StateEvade::Update(Character& character, const GameContext& context)
 {
-    float deltaTime = player.GetDeltaTime(); // または context から取得
-    float normTime = player.GetAnimNormalizedTime();
+    float deltaTime = character.GetDeltaTime(); // または context から取得
+    float normTime = character.GetAnimNormalizedTime();
 
     // --- 1. 高速移動と減衰処理 ---
     if (evadeSpeed > 0.0f)
     {
         VECTOR moveOffset = VScale(moveDir, evadeSpeed);
-        VECTOR currentPos = player.GetPos();
+        VECTOR currentPos = character.GetPos();
         VECTOR finalPos = context.field->WallCollision(currentPos, moveOffset);
 
         currentPos.x = finalPos.x;
         currentPos.z = finalPos.z;
-        player.SetPos(currentPos);
+        character.SetPos(currentPos);
 
         // フレーム経過とともに減速
         evadeSpeed -= 25.0f * deltaTime;
@@ -83,7 +83,7 @@ void StateEvade::Update(Player& player, const GameContext& context)
 
 
     // --- 4. 回避終了判定 ---
-    if (player.GetIsAnimationEnd() || normTime >= 0.95f)
+    if (character.GetIsAnimationEnd() || normTime >= 0.95f)
     {
         // 終了時に入力があれば Run、なければ Idle へ戻る
         float lx = 0.0f;
@@ -97,17 +97,17 @@ void StateEvade::Update(Player& player, const GameContext& context)
 
         if (isMoveKeyPressed || lx != 0.0f || ly != 0.0f)
         {
-            player.ChangeState(std::make_unique<StateRun>(), context);
+            character.ChangeState(std::make_unique<StateRun>(), context);
         }
         else
         {
-            player.ChangeState(std::make_unique<StateIdle>(), context);
+            character.ChangeState(std::make_unique<StateIdle>(), context);
         }
         return;
     }
 }
 
-void StateEvade::OnExit(Player& player, const GameContext& context)
+void StateEvade::OnExit(Character& character, const GameContext& context)
 {
 	// 回避状態終了時の処理（必要に応じて）
 }

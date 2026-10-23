@@ -12,6 +12,22 @@ struct GameContext;
 class Character : public GameObject
 {
 public:
+    // 全キャラクター共通のステートID
+    enum class CharacterStateID
+    {
+        Idle,
+        Run,
+        Jump,
+        Fall,
+        Attack1,
+        Attack2,
+        Attack3,
+        Attack4,
+        Evade,
+        Damage1,
+        MAX
+    };
+
     virtual ~Character() = default;
 
     virtual void Init(const GameContext& context) override = 0;
@@ -25,11 +41,14 @@ public:
      void AttatchItems();
      void FrameLotate();
 
-     // --- ★追加: コントローラー（入力/AI）のアクセサ ---
+     // --- コントローラー（入力/AI）のアクセサ ---
      IController* GetController() const { return controller.get(); }
      void SetController(std::unique_ptr<IController> newController) { controller = std::move(newController); }
 
     // --- アクセサ・共通操作 ---
+     CharacterStateID GetCurrentStateID() const { return currentStateID; }
+
+
     int GetModelHandle() const { return modelHandle; }
     Animstate& GetAnimState() { return animstate; }
 
@@ -69,11 +88,12 @@ protected:
     void UpdatePhysics(const GameContext& context);
     void UpdateTransform();
 
-    std::unique_ptr<ICharacterState> currentState;
+    CharacterStateID currentStateID = CharacterStateID::Idle; // ステートID (enum)
+    std::unique_ptr<ICharacterState> currentState;            // ステートインスタンス (ポインタ)
+
     std::unique_ptr<IController> controller; // コントローラー（入力/AI）
 
     Animstate animstate;
-
 	float deltaTime = 0.0f;
     float angle = DX_PI_F;
     float velocityY = 0.0f;

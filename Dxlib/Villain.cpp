@@ -50,9 +50,9 @@ void Villain::Update(const GameContext& context)
 void Villain::OnTakeDamage()
 {
 	// 既に被弾ステートでなければ被弾モーションへ移行
-	if (currentState != State::Damage1)
+	if (currentState != StateID::Damage1)
 	{
-		currentState = State::Damage1;
+		currentState = StateID::Damage1;
 		isMeleeAttacking = false;
 		animstate.PlayTime = 0.0f; // アニメーションを最初から再生
 	}
@@ -68,7 +68,7 @@ void Villain::AttackMovement(const GameContext& context)
 	float distance = sqrtf(diff.x * diff.x + diff.z * diff.z);
 	const float attackRange = 30.0f;
 
-	if (currentState != State::Attack1)
+	if (currentState != StateID::Attack1)
 	{
 		if (distance <= attackRange)
 		{

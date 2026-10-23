@@ -5,8 +5,6 @@
 class Villain : public Character
 {
 public:
-    enum StateID { Idle, Run, Attack1, Damage1, MAX };
-
     void Init(const GameContext& context) override;
     void Update(const GameContext& context) override;
 	void FrameLotate();

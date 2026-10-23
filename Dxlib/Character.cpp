@@ -31,18 +31,22 @@ void Character::Update(const GameContext& context)
 
 void Character::ChangeState(std::unique_ptr<ICharacterState> newState, const GameContext& context)
 {
+    // 古いステートの終了処理
     if (currentState)
     {
         currentState->OnExit(*this, context);
     }
 
+    // 新しいステートへ所有権を移動
     currentState = std::move(newState);
 
+    // 新しいステートの開始処理
     if (currentState)
     {
         currentState->OnEnter(*this, context);
     }
 }
+
 
 void Character::UpdatePhysics(const GameContext& context)
 {
