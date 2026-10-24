@@ -1,11 +1,11 @@
 #pragma once
-#include "IPlayerState.h"
-
-class StateFall : public IPlayerState
+#include "Character.h"
+#include "ICharacterState.h"
+class StateFall : public ICharacterState
 {
 public:
-    void OnEnter(Player& player, const GameContext& context) override;
-    void Update(Player& player, const GameContext& context) override;
-    void OnExit(Player& player, const GameContext& context) override;
+    void OnEnter(Character& character, const GameContext& context) override;
+    void Update(Character& character, const GameContext& context) override;
+    void OnExit(Character& character, const GameContext& context) override;
 };
 #pragma once

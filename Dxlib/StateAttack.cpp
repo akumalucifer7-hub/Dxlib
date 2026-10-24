@@ -53,21 +53,21 @@ void StateAttack::Update(Character& character, const GameContext& context)
     if (normTime > 0.9f && isNextComboRequested)
     {// 次のコンボ段階へ遷移
         int nextComboStep = comboStep + 1;
-        Player::StateID nextAttackState = Player::StateID::Attack1;
+        Character::CharacterStateID nextAttackState = Character::CharacterStateID::Attack1;
         switch (nextComboStep)
         {
         case 2:
-            nextAttackState = Player::StateID::Attack2;
+            nextAttackState = Character::CharacterStateID::Attack2;
             break;
         case 3:
-            nextAttackState = Player::StateID::Attack3;
+            nextAttackState = Character::CharacterStateID::Attack3;
             break;
         case 4:
-            nextAttackState = Player::StateID::Attack4;
+            nextAttackState = Character::CharacterStateID::Attack4;
             break;
         default:
             // コンボが最大段階に達した場合は Idle に戻す
-            player.ChangeState(std::make_unique<StateIdle>(), context);
+            character.ChangeState(std::make_unique<StateIdle>(), context);
             return;
         }
 

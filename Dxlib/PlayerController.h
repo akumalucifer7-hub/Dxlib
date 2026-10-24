@@ -6,5 +6,5 @@
 class PlayerController : public IController
 {
 public:
-    CommandState GetCommand(const Character& owner, const GameContext& context) override;
+	CommandState GetCommand(const Character& owner, const GameContext& context) const override;
 };

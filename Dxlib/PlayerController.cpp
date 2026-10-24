@@ -2,7 +2,7 @@
 #include "InputValidation.h"
 #include "Character.h"
 
-CommandState PlayerController::GetCommand(const Character& owner, const GameContext& context)
+CommandState PlayerController::GetCommand(const Character& owner, const GameContext& context) const 
 {
     CommandState cmd;
     auto& input = InputValidation::Instance();

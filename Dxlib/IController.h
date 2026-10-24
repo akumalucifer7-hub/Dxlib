@@ -9,11 +9,12 @@ struct CommandState
     bool isEvade = false;   // 回避要求
     bool isJump = false;    // ジャンプ要求
 	bool isSpecial = false; // 特殊行動要求
+	bool isDamaged = false;  // 被弾要求
 };
 
 class IController
 {
 public:
     virtual ~IController() = default;
-    virtual CommandState GetCommand(const Character& owner, const GameContext& context) = 0;
+    virtual CommandState GetCommand(const Character& owner, const GameContext& context) const = 0;
 };

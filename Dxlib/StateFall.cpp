@@ -1,28 +1,29 @@
 #include "StateFall.h"
 #include"StateIdle.h"
-#include"Player.h"
-void StateFall::OnEnter(Player& player, const GameContext& context)
+#include"Character.h"
+void StateFall::OnEnter(Character& character, const GameContext& context)
 {
 	// Fallアニメーションの再生設定など
-	player.SetAnimation(Player::StateID::Fall, true);
-	// StateFall自身が、Fallアニメーション(Player::State::Fall)を再生するようAnimatorに指示する
+	character.SetAnimation(static_cast<int>(Character::CharacterStateID::Fall), true);
+	// StateFall自身が、Fallアニメーション(Character::State::Fall)を再生するようAnimatorに指示する
 	
 }
 
-void StateFall::Update(Player& player, const GameContext& context)
+void StateFall::Update(Character& character, const GameContext& context)
 {
 	// ---  落下中の処理 ---
 	// ここで落下中の移動や入力判定などを行うことができます。
 
 	// --- 状態遷移判定 ---
 	// 接地したらIdle状態へ遷移
-	if (player.GetIsGround())
+	if (character.GetIsGround())
 	{
-		player.ChangeState(std::make_unique<StateIdle>(), context);
+		character.ChangeState(std::make_unique<StateIdle>(), context);
 		return;
 	}
 }
-void StateFall::OnExit(Player& player, const GameContext& context)
+void StateFall::OnExit(Character& character, const GameContext& context)
 {
+
 	// Fall状態終了時の処理（もしあれば）
 }

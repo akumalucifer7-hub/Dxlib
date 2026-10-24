@@ -5,12 +5,13 @@
 #include"StateFall.h"
 #include"Character.h"
 #include"Player.h"
-
-
+#include"InputValidation.h"
+#include"Camera.h"
+#include"PlayerController.h"
 void StateRun::OnEnter(Character& character, const GameContext& context)
 {
 	// Runアニメーションの再生設定など
-	character.SetAnimation(Character::StateID::Run, true);
+	character.SetAnimation(static_cast<int>(Character::CharacterStateID::Run), true);
 }
 
 void StateRun::Update(Character& character, const GameContext& context)
@@ -23,7 +24,7 @@ void StateRun::Update(Character& character, const GameContext& context)
     }
 
     // --- 2. ジャンプ判定 ---
-    if ((context.input->IsKeyTrigger(KEY_INPUT_SPACE) || context.input->IsButtonTrigger(XINPUT_BUTTON_A)) && character.GetIsGround())
+    if (cmd.isJump() && character.GetIsGround())
     {
         character.ChangeState(std::make_unique<StateJump>(), context);
         return;
@@ -66,18 +67,18 @@ void StateRun::Update(Character& character, const GameContext& context)
 
         // プレイヤーの進行方向（角度）を更新
         float newAngle = atan2f(moveVec.x, moveVec.z) + DX_PI_F;
-        player.SetPlayerAngle(newAngle);
+        character.SetAngle(newAngle);
 
         // 走りの速度（2.5f）を適用して位置を計算
         float runSpeed = 2.0f;
         VECTOR moveOffset = VScale(moveVec, runSpeed);
 
-        VECTOR currentPos = player.GetPos();
+        VECTOR currentPos = character.GetPos();
         VECTOR finalPos = context.field->WallCollision(currentPos, moveOffset);
 
         currentPos.x = finalPos.x;
         currentPos.z = finalPos.z;
-        player.SetPos(currentPos);
+        character.SetPos(currentPos);
     }
 }
 

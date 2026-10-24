@@ -6,7 +6,7 @@
 void StateEvade::OnEnter(Character& character, const GameContext& context)
 {
     // 1. 回避アニメーションの再生（非ループ）
-    character.SetAnimation(Character::StateID::Evade, false);
+    character.SetAnimation(static_cast<int>(Character::CharacterStateID::Evade), false);
 
     // 2. 移動方向の決定
     float lx = 0.0f;
@@ -33,12 +33,12 @@ void StateEvade::OnEnter(Character& character, const GameContext& context)
         moveDir = VNorm(VTransform(localMoveVec, cameraRotMat));
 
         float newAngle = atan2f(moveDir.x, moveDir.z) + DX_PI_F;
-        player.SetAngle(newAngle);
+        character.SetAngle(newAngle);
     }
     else
     {
         // 入力がない場合：プレイヤーが現在向いている正面方向へ進む
-        MATRIX rotMat = MGetRotY(player.GetAngle());
+        MATRIX rotMat = MGetRotY(character.GetAngle());
         moveDir = VTransform(VGet(0.0f, 0.0f, -1.0f), rotMat);
     }
 

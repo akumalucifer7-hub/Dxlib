@@ -7,11 +7,11 @@ AIController::AIController(float attackRange, float attackInterval)
 {
 }
 
-CommandState AIController::GetCommand(const Character& owner, const GameContext& context)
+CommandState AIController::GetCommand(const Character& owner, const GameContext& context) const
 {
     CommandState cmd;
 	float deltatime;
-	deltatime = owner.GetDeltaTime();
+	deltatime = owner.CalculateDeltaTime();
     // ターゲット（プレイヤー）の存在確認
     if (!context.player) return cmd;
 

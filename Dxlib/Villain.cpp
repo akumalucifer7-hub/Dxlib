@@ -1,106 +1,65 @@
-﻿#include "Villain.h"
-#include "Player.h"
+﻿// Villain.cpp
+#include "Villain.h"
+#include "StateIdle.h"
+#include "AIController.h"
 
 void Villain::Init(const GameContext& context)
 {
-	MV1SetLoadModelUsePhysicsMode(DX_LOADMODEL_PHYSICS_DISABLE);
-	modelHandle = MV1LoadModel("Assets/3Dmodel/koharu_rikka_natsufuku_mmd_vrm/KoharuRikka_Natsufuku.pmx");
-	centerFrameIndex = MV1SearchFrame(modelHandle, "センター");
-	context.animator->initAnimator(modelHandle, animstate, static_cast<int>(StateID::Idle));
+    MV1SetLoadModelUsePhysicsMode(DX_LOADMODEL_PHYSICS_DISABLE);
+    modelHandle = MV1LoadModel("Assets/3Dmodel/koharu_rikka_natsufuku_mmd_vrm/KoharuRikka_Natsufuku.pmx");
+    centerFrameIndex = MV1SearchFrame(modelHandle, "センター");
 
-	weapon1.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
-	weapon2.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
+    weapon1.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
+    weapon2.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
 
-	collision.Init();
+    // -------------------------------------------------------------
+    // 当たり判定 (Collision) の初期化
+    // -------------------------------------------------------------
+    // 1. 被弾用 AABB (Hurtbox) 設定
+    collision.SetLocalHurtbox({
+        VGet(-3.5f, 0.0f, -3.0f),
+        VGet(3.5f, 18.0f, 3.0f)
+        });
+
+    // 2. 敵固有の攻撃 AABB (Hitbox) 登録
+    collision.RegisterAttackHitbox(
+        static_cast<int>(CharacterStateID::Attack1),
+        {
+            0.3f, 0.7f, // 発生タイミング
+            { VGet(-15.0f, 0.0f, 0.0f), VGet(15.0f, 20.0f, 25.0f) }
+        }
+    );
+
+    // -------------------------------------------------------------
+    // AIコントローラー・ステート初期化
+    // -------------------------------------------------------------
+    controller = std::make_unique<AIController>(30.0f, 1.5f);
+    ChangeState(std::make_unique<StateIdle>(), context);
+
+    if (context.animator)
+    {
+        context.animator->initAnimator(modelHandle, animstate, static_cast<int>(CharacterStateID::Idle));
+    }
 }
 
 void Villain::Update(const GameContext& context)
 {
 	 deltaTime = CalculateDeltaTime();
 
-	// 被弾アニメーションの終了判定
-	if (currentState == State::Damage1)
-	{
-		if (animstate.isAnimationEnd)
-		{
-			currentState = State::Idle;
-			isMeleeAttacking = false;
-		}
-	}
-	else
-	{
-		// 被弾中でなければAI/攻撃行動を実行
-		AttackMovement(context);
-	}
-
 	MV1SetPosition(modelHandle, pos);
-	IsLoop = (currentState == State::Idle || currentState == State::Run);
 
-	context.animator->updateAnimator(modelHandle, animstate, static_cast<int>(currentState), IsLoop, deltaTime);
+	Character::Update(context);
+	weapon1.AttachWeapon(modelHandle, "右中指１", 0.0f, -0.3f, 0.0f, 0.0f, 90.0f, 0.0f);
+	weapon2.AttachWeapon(modelHandle, "左中指１", 0.0f, -0.3f, 0.0f, 0.0f, 90.0f, 0.0f);
 
-	items.AttachWeapon(modelHandle, "右中指１", 0.0f, -0.3f, 0.0f, 0.0f, 90.0f, 0.0f);
-	items2.AttachWeapon(modelHandle, "左中指１", 0.0f, -0.3f, 0.0f, 0.0f, 90.0f, 0.0f);
-
-	FrameLotate();
-
-	// 当たり判定更新
-	collision.Update(*this, context);
+	Character::FrameRotate();
 }
 
-void Villain::OnTakeDamage()
+void Villain::OnTakeDamage(const GameContext& context)
 {
-	// 既に被弾ステートでなければ被弾モーションへ移行
-	if (currentState != StateID::Damage1)
-	{
-		currentState = StateID::Damage1;
-		isMeleeAttacking = false;
-		animstate.PlayTime = 0.0f; // アニメーションを最初から再生
-	}
+	
 }
 
-void Villain::AttackMovement(const GameContext& context)
-{
-	if (!context.player) return;
-
-	VECTOR playerPos = context.player->GetPos();
-	VECTOR diff = VSub(playerPos, pos);
-
-	float distance = sqrtf(diff.x * diff.x + diff.z * diff.z);
-	const float attackRange = 30.0f;
-
-	if (currentState != StateID::Attack1)
-	{
-		if (distance <= attackRange)
-		{
-			playerAngle = atan2f(diff.x, diff.z) + DX_PI_F;
-			MV1SetRotationXYZ(modelHandle, VGet(0.0f, playerAngle, 0.0f));
-
-			currentState = State::Attack1;
-			isMeleeAttacking = true;
-			animstate.PlayTime = 0.0f;
-		}
-		else
-		{
-			currentState = State::Idle;
-			isMeleeAttacking = false;
-		}
-	}
-
-	if (currentState == State::Attack1 && animstate.isAnimationEnd)
-	{
-		currentState = State::Idle;
-		isMeleeAttacking = false;
-	}
-}
-
-void Villain::FrameLotate()
-{
-	MV1ResetFrameUserLocalMatrix(modelHandle, centerFrameIndex);
-	MATRIX rootMatrix = MV1GetFrameLocalMatrix(modelHandle, centerFrameIndex);
-	rootMatrix.m[3][0] = 0.0f;
-	rootMatrix.m[3][2] = 0.0f;
-	MV1SetFrameUserLocalMatrix(modelHandle, centerFrameIndex, rootMatrix);
-}
 
 void Villain::Draw()
 {

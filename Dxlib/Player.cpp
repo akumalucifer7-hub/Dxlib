@@ -1,15 +1,12 @@
 #include "Player.h"
 #include "StateIdle.h"
-
-#define _HAS_STD_BYTE 0
+#include "PlayerController.h"
 
 void Player::Init(const GameContext& context)
 {
-    // モデルおよびボーン枠の初期化
     modelHandle = MV1LoadModel("Assets/3Dmodel/natsuki_karin_mmd_vrm/夏色花梨.pmx");
     centerFrameIndex = MV1SearchFrame(modelHandle, "センター");
 
-    // 武器の初期化
     SwordItems.InitWeapon("Assets/3Dmodel/weapons/匙式大直剣/匙式大直剣.pmx", "グリップ1");
     GunItemsRight.InitWeapon("Assets/3Dmodel/weapons/DesertEagle_MMD/DesertEagle.pmx", "全ての親");
     GunItemsLeft.InitWeapon("Assets/3Dmodel/weapons/DesertEagle_MMD/DesertEagle.pmx", "全ての親");
@@ -18,12 +15,44 @@ void Player::Init(const GameContext& context)
     pos = VGet(0.0f, 26.0f, -320.0f);
     GunItemsLeft.SetShapes("ステンレス", 1.0f);
 
-    // 当たり判定クラスの初期化
-    playercollision.Init();
+    // -------------------------------------------------------------
+    // 当たり判定 (Collision) の初期化
+    // -------------------------------------------------------------
+    // 1. 被弾用 AABB (Hurtbox) のローカルサイズ設定
+    collision.SetLocalHurtbox({
+        VGet(-3.0f, 0.0f, -2.5f), // 最小座標 (Min)
+        VGet(3.0f, 20.0f, 2.5f)   // 最大座標 (Max)
+        });
 
-    // 初期ステート（StateIdle）の設定
+    // 2. 攻撃用 AABB (Hitbox) テーブルの登録
+    // Attack1 (アニメーションID = static_cast<int>(CharacterStateID::Attack1))
+    collision.RegisterAttackHitbox(
+        static_cast<int>(CharacterStateID::Attack1),
+        {
+            0.2f, 0.5f, // 発生時間 (開始 20% ? 終了 50%)
+            { VGet(-20.0f, 0.0f, 0.0f), VGet(20.0f, 20.0f, 30.0f) } // ローカル AABB 範囲
+        }
+    );
+
+    // Attack2 (コンボ2段目)
+    collision.RegisterAttackHitbox(
+        static_cast<int>(CharacterStateID::Attack2),
+        {
+            0.2f, 0.6f,
+            { VGet(-25.0f, 0.0f, 0.0f), VGet(25.0f, 25.0f, 35.0f) }
+        }
+    );
+
+    // -------------------------------------------------------------
+    // コントローラー・ステート初期化
+    // -------------------------------------------------------------
+    controller = std::make_unique<PlayerController>();
     ChangeState(std::make_unique<StateIdle>(), context);
-    context.animator->initAnimator(modelHandle, animstate, static_cast<int>(Character::CharacterStateID::Idle));
+
+    if (context.animator)
+    {
+        context.animator->initAnimator(modelHandle, animstate, static_cast<int>(CharacterStateID::Idle));
+    }
 }
 
 void Player::Update(const GameContext& context)
@@ -35,20 +64,14 @@ void Player::Update(const GameContext& context)
     Character::Update(context);
 
     // フレーム位置の補正と武器のアタッチ
-    FrameLotate();
+    Character::FrameRotate();
     AttatchItems();
 
-    // 当たり判定・押し出し処理の更新
-    playercollision.Update(*this, context, deltaTime);
 }
 
-void Player::OnTakeDamage()
+void Player::OnTakeDamage(const GameContext& context)
 {
-    // 無敵時間中でなければ被弾ステート（StateDamage）へ遷移
-    if (!IsInvincible && currentAnimID != static_cast<int>(StateID::Damage1))
-    {
-        // ChangeState(std::make_unique<StateDamage>(), context);
-    }
+    
 }
 
 void Player::AttatchItems()
@@ -65,14 +88,7 @@ void Player::AttatchItems()
     }
 }
 
-void Player::FrameLotate()
-{
-    MV1ResetFrameUserLocalMatrix(modelHandle, centerFrameIndex);
-    MATRIX rootMatrix = MV1GetFrameLocalMatrix(modelHandle, centerFrameIndex);
-    rootMatrix.m[3][0] = 0.0f;
-    rootMatrix.m[3][2] = 0.0f;
-    MV1SetFrameUserLocalMatrix(modelHandle, centerFrameIndex, rootMatrix);
-}
+
 
 void Player::Draw()
 {
@@ -89,9 +105,9 @@ void Player::Draw()
     }
 }
 
-void Player::DrawDebug() const
+void Player::DrawDebug() 
 {
     // 当たり判定のデバッグ枠を描画
-    playercollision.DrawDebug(*this);
+    collision.DrawDebug(*this);
     DrawFormatString(10, 500, GetColor(255, 255, 255), "AnimID: %d, AttachIndex: %d", currentAnimID, animstate.AttachIndex);
 }

@@ -4,7 +4,9 @@
 #include "Animator.h"
 #include "Collision.h"
 #include "IController.h"
+#include "CharacterCollision.h" // コリジョンコンポーネント
 #include <memory>
+#include"IController.h"
 
 class ICharacterState;
 struct GameContext;
@@ -12,20 +14,9 @@ struct GameContext;
 class Character : public GameObject
 {
 public:
-    // 全キャラクター共通のステートID
     enum class CharacterStateID
     {
-        Idle,
-        Run,
-        Jump,
-        Fall,
-        Attack1,
-        Attack2,
-        Attack3,
-        Attack4,
-        Evade,
-        Damage1,
-        MAX
+        Idle, Run, Jump, Fall, Attack1, Attack2, Attack3, Attack4, Evade, Damage1, MAX
     };
 
     virtual ~Character() = default;
@@ -33,76 +24,57 @@ public:
     virtual void Init(const GameContext& context) override = 0;
     virtual void Update(const GameContext& context) override;
     virtual void Draw() override;
+	virtual void FrameRotate();
+	virtual void AttatchItems();
+    // --- 当たり判定用の仮想関数 ---
+    virtual AABB GetHurtboxAABB() const;
+    virtual bool GetCurrentAttackAABB(AABB& outAABB) const;
+    virtual void DrawDebug();
+    virtual void OnTakeDamage(const GameContext& context);
+
+    // コリジョンコンポーネントへのアクセサ
+    CharacterCollision& GetCollision() { return collision; }
+    const CharacterCollision& GetCollision() const { return collision; }
 
     // ステート遷移
     void ChangeState(std::unique_ptr<ICharacterState> newState, const GameContext& context);
 
-	// --- キャラクター固有の操作 ---
-     void AttatchItems();
-     void FrameLotate();
-
-     // --- コントローラー（入力/AI）のアクセサ ---
-     IController* GetController() const { return controller.get(); }
-     void SetController(std::unique_ptr<IController> newController) { controller = std::move(newController); }
-
-    // --- アクセサ・共通操作 ---
-     CharacterStateID GetCurrentStateID() const { return currentStateID; }
-
-
+    // 共通アクセサ・操作
+    CharacterStateID GetCurrentStateID() const { return currentStateID; }
     int GetModelHandle() const { return modelHandle; }
     Animstate& GetAnimState() { return animstate; }
-
     VECTOR GetPos() const { return pos; }
     void SetPos(const VECTOR& newPos) { pos = newPos; }
-
     float GetAngle() const { return angle; }
     void SetAngle(float newAngle) { angle = newAngle; }
-
-    float GetVelocityY() const { return velocityY; }
-    void SetVelocityY(float v) { velocityY = v; }
-
-    bool GetIsGround() const { return isGround; }
-    void SetIsGround(bool ground) { isGround = ground; }
-
+	bool GetIsGround() const { return isGround; }
     bool GetIsMeleeAttacking() const { return isMeleeAttacking; }
     void SetIsMeleeAttacking(bool attacking) { isMeleeAttacking = attacking; }
-
+	bool GetIsHit() const { return isInvincible; }
     float GetAnimNormalizedTime() const { return animstate.GetNormalizedTime(); }
-	float GetDeltaTime() const { return deltaTime; }
     bool GetIsAnimationEnd() const { return animstate.isAnimationEnd; }
-    // 
-    // アニメーション設定
-    void SetAnimation(int animID, bool isLoop)
-    {
-        currentAnimID = animID;
-        isAnimLoop = isLoop;
-    }
+    void SetAnimation(int animID, bool isLoop) { currentAnimID = animID; isAnimLoop = isLoop; }
     int GetCurrentAnimID() const { return currentAnimID; }
-
-    // 抽象判定（各キャラごとに設定または共通コリジョンクラス等へ委譲）
-    virtual AABB GetHurtboxAABB() const = 0;
-    virtual bool GetCurrentAttackAABB(AABB& outAABB) const = 0;
-    virtual void OnTakeDamage() = 0;
-
+	const IController* GetController() const { return controller.get(); }
 protected:
     void UpdatePhysics(const GameContext& context);
     void UpdateTransform();
 
-    CharacterStateID currentStateID = CharacterStateID::Idle; // ステートID (enum)
-    std::unique_ptr<ICharacterState> currentState;            // ステートインスタンス (ポインタ)
+    CharacterStateID currentStateID = CharacterStateID::Idle;
+    std::unique_ptr<ICharacterState> currentState;
+    std::unique_ptr<IController> controller;
 
-    std::unique_ptr<IController> controller; // コントローラー（入力/AI）
+    CharacterCollision collision; // コンポーネントとして所有
 
     Animstate animstate;
-	float deltaTime = 0.0f;
+    float deltaTime = 0.0f;
     float angle = DX_PI_F;
     float velocityY = 0.0f;
     bool isGround = true;
     float gravity = -0.8f;
-
     bool isMeleeAttacking = false;
-	bool IsInvincible = false;
-
+    bool isInvincible = false;
     int currentAnimID = 0;
     bool isAnimLoop = true;
+    int centerFrameIndex = -1;
 };
