@@ -14,7 +14,8 @@ void StateDamage::OnEnter(Character& owner, const GameContext& context)
 
 void StateDamage::Update(Character& owner, const GameContext& context)
 {
-	float deltatime = owner.calculateDeltaTime();
+    float deltatime;
+	deltatime = owner.GetDeltaTime();
     // 1. ノックバック移動（後ろ方向に減速しながら移動）
     if (knockbackSpeed > 0.0f)
     {

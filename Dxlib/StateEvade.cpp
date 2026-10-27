@@ -32,8 +32,8 @@ void StateEvade::OnEnter(Character& character, const GameContext& context)
         VECTOR localMoveVec = VGet(lx, 0.0f, ly);
         moveDir = VNorm(VTransform(localMoveVec, cameraRotMat));
 
-        float newAngle = atan2f(moveDir.x, moveDir.z) + DX_PI_F;
-        character.SetAngle(newAngle);
+        float angle = atan2f(moveDir.x, moveDir.z) + DX_PI_F;
+        character.SetAngle(angle);
     }
     else
     {

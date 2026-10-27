@@ -11,7 +11,7 @@ CommandState AIController::GetCommand(const Character& owner, const GameContext&
 {
     CommandState cmd;
 	float deltatime;
-	deltatime = owner.CalculateDeltaTime();
+	deltatime = owner.GetDeltaTime();
     // ターゲット（プレイヤー）の存在確認
     if (!context.player) return cmd;
 

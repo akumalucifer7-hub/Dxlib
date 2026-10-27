@@ -1,6 +1,10 @@
 #pragma once
 #include "DxLib.h"
 
+
+class Character;
+struct GameContext;
+
 struct CommandState
 {
     float moveX = 0.0f;     // 移動ベクトルX (-1.0 ~ 1.0)

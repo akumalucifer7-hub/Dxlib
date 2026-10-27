@@ -48,10 +48,16 @@ public:
     float GetAngle() const { return angle; }
     void SetAngle(float newAngle) { angle = newAngle; }
 	bool GetIsGround() const { return isGround; }
+	void SetIsGround(bool ground) { isGround = ground; }
+	float GetVelocityY() const { return velocityY; }
+	void SetVelocityY(float newVelocityY) { velocityY = newVelocityY; }
     bool GetIsMeleeAttacking() const { return isMeleeAttacking; }
     void SetIsMeleeAttacking(bool attacking) { isMeleeAttacking = attacking; }
 	bool GetIsHit() const { return isInvincible; }
+	bool GetIsInvincible() const { return isInvincible; }
+	void SetIsInvincible(bool invincible) { isInvincible = invincible; }
     float GetAnimNormalizedTime() const { return animstate.GetNormalizedTime(); }
+	float GetDeltaTime() const { return deltaTime; }
     bool GetIsAnimationEnd() const { return animstate.isAnimationEnd; }
     void SetAnimation(int animID, bool isLoop) { currentAnimID = animID; isAnimLoop = isLoop; }
     int GetCurrentAnimID() const { return currentAnimID; }
@@ -77,4 +83,5 @@ protected:
     int currentAnimID = 0;
     bool isAnimLoop = true;
     int centerFrameIndex = -1;
+
 };

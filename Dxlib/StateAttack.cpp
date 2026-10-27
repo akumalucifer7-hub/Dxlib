@@ -11,7 +11,7 @@ void StateAttack::OnEnter(Character& character, const GameContext& context)
     // 1. 近接攻撃フラグを立てて大剣を構えさせる
     character.SetIsMeleeAttacking(true);
         // 2. 指定された攻撃アニメーションを単発再生でセット
-    character.SetAnimation(attackAnimState, false);
+    character.SetAnimation(static_cast<int>(Character::CharacterStateID::Attack1), false);
     // 3. 攻撃開始時の前進（踏み込み）速度を設定（コンボ段階に応じて調整可）
     stepForwardSpeed = 2.0f;
 }

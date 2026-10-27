@@ -1,5 +1,6 @@
 #pragma once
 #include "ICharacterState.h"
+#include "DxLib.h"
 
 class StateEvade : public ICharacterState
 {
