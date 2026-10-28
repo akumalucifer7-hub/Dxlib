@@ -104,6 +104,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\Dxlib\DxLib_VC\プロジェクトに追加すべきファイル_VC用</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -121,6 +122,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\repository\Dxlib\Dxlib\DxLib_VC\プロジェクトに追加すべきファイル_VC用</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,6 +147,7 @@
     <ClCompile Include="StateFall.cpp" />
     <ClCompile Include="StateIdle.cpp" />
     <ClCompile Include="StateJump.cpp" />
+    <ClCompile Include="StateParry.cpp" />
     <ClCompile Include="StateRun.cpp" />
     <ClCompile Include="UserInterface.cpp" />
     <ClCompile Include="Villain.cpp" />
@@ -177,8 +180,9 @@
     <ClInclude Include="StateFall.h" />
     <ClInclude Include="StateIdle.h" />
     <ClInclude Include="StateJump.h" />
+    <ClInclude Include="StateParry.h" />
     <ClInclude Include="StateRun.h" />
-    <ClInclude Include="UserInterfaceh.h" />
+    <ClInclude Include="UserInterface.h" />
     <ClInclude Include="Villain.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="Winmain.h" />

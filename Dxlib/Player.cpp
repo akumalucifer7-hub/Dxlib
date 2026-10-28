@@ -1,7 +1,9 @@
 #include "Player.h"
+#include"Villain.h"
 #include "StateIdle.h"
 #include "PlayerController.h"
-
+#include"InputValidation.h"
+Player::~Player() = default;
 void Player::Init(const GameContext& context)
 {
     modelHandle = MV1LoadModel("Assets/3Dmodel/natsuki_karin_mmd_vrm/夏色花梨.pmx");
@@ -12,7 +14,6 @@ void Player::Init(const GameContext& context)
     GunItemsLeft.InitWeapon("Assets/3Dmodel/weapons/DesertEagle_MMD/DesertEagle.pmx", "全ての親");
 
     MV1SetLoadModelUsePhysicsMode(DX_LOADMODEL_PHYSICS_REALTIME);
-    pos = VGet(0.0f, 26.0f, -320.0f);
     GunItemsLeft.SetShapes("ステンレス", 1.0f);
 
     // -------------------------------------------------------------
@@ -30,7 +31,7 @@ void Player::Init(const GameContext& context)
         static_cast<int>(CharacterStateID::Attack1),
         {
             0.2f, 0.5f, // 発生時間 (開始 20% ? 終了 50%)
-            { VGet(-20.0f, 0.0f, 0.0f), VGet(20.0f, 20.0f, 30.0f) } // ローカル AABB 範囲
+            { VGet(-20.0f, 0.0f, 0.0f), VGet(20.0f, 10.0f, -20.0f) } // ローカル AABB 範囲
         }
     );
 
@@ -39,13 +40,27 @@ void Player::Init(const GameContext& context)
         static_cast<int>(CharacterStateID::Attack2),
         {
             0.2f, 0.6f,
-            { VGet(-25.0f, 0.0f, 0.0f), VGet(25.0f, 25.0f, 35.0f) }
+            { VGet(-25.0f, 0.0f, 0.0f), VGet(25.0f, 10.0f, -25.0f) }
         }
     );
+	// Attack3 (コンボ3段目)
+	collision.RegisterAttackHitbox(
+		static_cast<int>(CharacterStateID::Attack3),
+		{
+			0.2f, 0.7f,
+			{ VGet(-25.0f, 0.0f, 0.0f), VGet(25.0f, 10.0f, -25.0f) }
+		}
+	);
+	// Attack4 (コンボ4段目)
+	collision.RegisterAttackHitbox(
+		static_cast<int>(CharacterStateID::Attack4),
+		{
+			0.2f, 0.8f,
+			{ VGet(-20.0f, 0.0f, 0.0f), VGet(0.0f, 0.0f, -70.0f) }
+		}
+	);
 
-    // -------------------------------------------------------------
     // コントローラー・ステート初期化
-    // -------------------------------------------------------------
     controller = std::make_unique<PlayerController>();
     ChangeState(std::make_unique<StateIdle>(), context);
 
@@ -53,14 +68,15 @@ void Player::Init(const GameContext& context)
     {
         context.animator->initAnimator(modelHandle, animstate, static_cast<int>(CharacterStateID::Idle));
     }
+    pos = VGet(0.0f, 0.0f, -70.0f);
+
 }
 
 void Player::Update(const GameContext& context)
 {
 
-    deltaTime = CalculateDeltaTime();
 
-    // 基底クラス（Character）の物理計算・ステート更新・アニメーション処理を実行
+    // 基底クラスの物理計算・ステート更新・アニメーション処理
     Character::Update(context);
 
     // フレーム位置の補正と武器のアタッチ
@@ -71,7 +87,8 @@ void Player::Update(const GameContext& context)
 
 void Player::OnTakeDamage(const GameContext& context)
 {
-    
+	Character::OnTakeDamage(context);
+	HP = HP - context.villain->GetAttackPower();
 }
 
 void Player::AttatchItems()

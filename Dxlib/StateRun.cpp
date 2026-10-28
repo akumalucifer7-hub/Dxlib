@@ -70,7 +70,7 @@ void StateRun::Update(Character& owner, const GameContext& context)
 
     // キャラクターの移動速度を取得して移動量を計算
     // （※Character側に GetMoveSpeed() が未実装の場合は固定値やプロパティを参照）
-    float moveSpeed = 2.0f;
+    float moveSpeed = 1.75f;
     VECTOR moveOffset = VScale(moveVec, moveSpeed);
 
     // フィールドとの壁衝突判定を行って座標を更新

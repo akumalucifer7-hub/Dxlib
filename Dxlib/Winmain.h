@@ -8,7 +8,13 @@
 GameScene gameScene;
 InputValidation& inputValidation = InputValidation::Instance();
 
+enum class ModeState
+{
+	GameMode,
+	TitleMode,
+	GameOverMode
+};
 
+ModeState modestate = ModeState::GameMode;
 
-
-
+InputValidation input;

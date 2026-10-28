@@ -1,49 +1,124 @@
 #include "CharacterCollision.h"
 #include "Character.h"
+#include "GameContext.h"
+#include "InputValidation.h"
+#include "StateDamage.h"
+#include "StateParry.h"
 #include "DebugRenderer.h"
 #include "DebugColor.h"
+#include"IController.h"
+#include"Player.h"
+
+void CharacterCollision::ResolveCharacterCollisions(Character& player, Character& villain, const GameContext& context)
+{
+    player.SetIsHit(false);
+    villain.SetIsHit(false);
+
+    // 1. 敵の攻撃 vs プレイヤーの被弾判定
+    AABB villainAttackAABB;
+    if (CheckAABBOverlap(villainAttackAABB, player.GetHurtboxAABB()))
+    {
+        if (!villain.GetHasHitTarget())
+        {
+            villain.SetHasHitTarget(true);
+
+            Player* pPlayer = dynamic_cast<Player*>(&player);
+            if (pPlayer && pPlayer->GetParryTimer() > 0.0f)
+            {
+                // ★パリィ成功
+                pPlayer->ClearParryTimer();
+
+                // 敵の方向へ向き直る
+                VECTOR diff = VSub(villain.GetPos(), player.GetPos());
+                diff.y = 0.0f;
+                if (VSize(diff) > 0.001f)
+                {
+                    player.SetAngle(atan2f(diff.x, diff.z) + DX_PI_F);
+                }
+
+                // 攻撃動作を中断して StateParry（弾きモーション）へ遷移
+                player.ChangeState(std::make_unique<StateParry>(), context);
+            }
+            else if (!player.GetIsInvincible())
+            {
+                player.OnTakeDamage(context);
+            }
+        }
+    }
+
+
+    // 2. プレイヤーの攻撃 vs 敵の被弾判定
+    AABB playerAttackAABB;
+    if (player.GetCurrentAttackAABB(playerAttackAABB))
+    {
+        if (CheckAABBOverlap(playerAttackAABB, villain.GetHurtboxAABB()))
+        {
+            if (!villain.GetIsInvincible() &&
+                villain.GetCurrentStateID() != Character::CharacterStateID::Damage1)
+            {
+                villain.OnTakeDamage(context);
+				villain.SetIsHit(true);
+            }
+        }
+    }
+
+    // 3. キャラクター同士のめり込み押し出し
+    VECTOR playerPos = player.GetPos();
+    VECTOR villainPos = villain.GetPos();
+
+    ResolveAABBPushoutXZ(
+        player.GetHurtboxAABB(), playerPos,
+        villain.GetHurtboxAABB(), villainPos
+    );
+
+    player.SetPos(playerPos);
+    villain.SetPos(villainPos);
+}
+
+void CharacterCollision::RegisterAttackHitbox(int stateID, float startTime, float endTime, const AABB& localAABB)
+{
+    hitboxTable[stateID] = { startTime, endTime, localAABB };
+}
 
 void CharacterCollision::RegisterAttackHitbox(int stateID, const AttackHitboxData& data)
 {
-    attackHitboxTable[stateID] = data;
-}
-
-AABB CharacterCollision::GetHurtboxAABB(const Character& owner) const
-{
-    // 所有者の位置と向き（Angle + PI）で変換
-    return TransformAABB(localHurtbox, owner.GetPos(), owner.GetAngle() + DX_PI_F);
+    hitboxTable[stateID] = data;
 }
 
 bool CharacterCollision::GetCurrentAttackAABB(const Character& owner, AABB& outAABB) const
 {
-    if (!owner.GetIsMeleeAttacking()) return false;
-
-    auto it = attackHitboxTable.find(owner.GetCurrentAnimID());
-    if (it == attackHitboxTable.end()) return false;
+    int currentAnimID = owner.GetCurrentAnimID();
+    auto it = hitboxTable.find(currentAnimID);
+    if (it == hitboxTable.end()) return false;
 
     float normTime = owner.GetAnimNormalizedTime();
     const auto& data = it->second;
 
     if (normTime >= data.startTime && normTime <= data.endTime)
     {
-        outAABB = TransformAABB(data.localAABB, owner.GetPos(), owner.GetAngle() + DX_PI_F);
+        outAABB = TransformAABB(data.localAABB, owner.GetPos(), owner.GetAngle());
         return true;
     }
 
     return false;
 }
 
-void CharacterCollision::DrawDebug(const Character& owner, bool isHit) const
+AABB CharacterCollision::GetHurtboxAABB(const Character& owner) const
 {
-    // 被弾枠の描画
+    return TransformAABB(localHurtbox, owner.GetPos(), owner.GetAngle());
+}
+
+void CharacterCollision::DrawDebug(const Character& owner) const
+{
+    // 1. 被弾ボックス(Hurtbox)を緑色で描画
     AABB hurtbox = GetHurtboxAABB(owner);
     DebugRenderer::DrawAABB(hurtbox, DebugColor::Hurtbox);
 
-    // 攻撃枠の描画
+    // 2. 攻撃ボックス(Hitbox)発生中は赤色/黄色で描画
     AABB attackAABB;
     if (GetCurrentAttackAABB(owner, attackAABB))
     {
-        unsigned int color = isHit ? DebugColor::ActiveHit : DebugColor::Hitbox;
+        unsigned int color = owner.GetIsHit() ? DebugColor::ActiveHit : DebugColor::Hitbox;
         DebugRenderer::DrawAABB(attackAABB, color);
     }
 }

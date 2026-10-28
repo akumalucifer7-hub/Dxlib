@@ -1,6 +1,7 @@
 #include "PlayerController.h"
 #include "InputValidation.h"
 #include "Character.h"
+#include "Camera.h"
 
 CommandState PlayerController::GetCommand(const Character& owner, const GameContext& context) const 
 {
@@ -23,7 +24,29 @@ CommandState PlayerController::GetCommand(const Character& owner, const GameCont
         if (input.IsKeyPressed(KEY_INPUT_A)) cmd.moveX -= 1.0f;
         if (input.IsKeyPressed(KEY_INPUT_D)) cmd.moveX += 1.0f;
     }
+	if (cmd.moveX != 0.0f || cmd.moveY != 0.0f)
+	{
+        if (context.camera)
+        {
+            // カメラのY軸回転行列を作成
+            MATRIX cameraRotMat = MGetRotY(context.camera->GetCameraYaw());
 
+            // ローカル入力ベクトル (X, 0, Y)
+            VECTOR localMoveVec = VGet(cmd.moveX, 0.0f, cmd.moveY);
+
+            // カメラ回転を行列乗算してワールド空間の移動ベクトルへ変換
+            VECTOR worldMoveVec = VTransform(localMoveVec, cameraRotMat);
+
+            cmd.moveX = worldMoveVec.x;
+            cmd.moveY = worldMoveVec.z;
+        }
+        else
+        {
+            // カメラがない場合のフォールバック（そのまま代入）
+			cmd.moveX = cmd.moveX;
+			cmd.moveY = cmd.moveY;
+        }
+	}
     // 2. 行動入力
     // 攻撃 (左クリック または XInput Xボタン)
     if (input.IsMouseTrigger(InputValidation::Mouse::Left) ||
@@ -52,6 +75,8 @@ CommandState PlayerController::GetCommand(const Character& owner, const GameCont
     {
         cmd.isSpecial = true;
     }
+
+
 
     return cmd;
 }

@@ -1,4 +1,6 @@
 #include"Winmain.h"
+#include "GameContext.h"
+#include <algorithm>
 #include <windows.h>
 #pragma warning(disable: C4819)
 using namespace DxLib;
@@ -49,15 +51,43 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	gameScene.InitGame(selectMode, SCREENWIDTH, SCREENHEIGHT);
 
 	//ゲームループの実行
+	GameContext context;
+	LONGLONG prevTime = GetNowHiPerformanceCount();
 	while (ProcessMessage() == 0 && ClearDrawScreen() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 		//画面のクリア
 		ClearDrawScreen();
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		//ゲームシーンの更新
+		LONGLONG currentTime = GetNowHiPerformanceCount();
+		float rawDeltaTime = static_cast<float>(currentTime - prevTime) / 1000000.0f;
+		prevTime = currentTime;
+		context.deltaTime = (std::min)(rawDeltaTime, 0.1f);
 		inputValidation.Instance().ValidateInputUpdate();
-		gameScene.UpdateGame(inputValidation.Instance(), SCREENWIDTH, SCREENHEIGHT);
-		gameScene.DrawGame();
+		if (gameScene.GetIsGameOver())
+		{
+			modestate = ModeState::GameOverMode;
+		}
+		switch (modestate)
+		{
+		case ModeState::GameMode:
+			gameScene.UpdateGame(inputValidation.Instance(), SCREENWIDTH, SCREENHEIGHT);
+			gameScene.DrawGame();
+			break;
+		case ModeState::TitleMode:
+			// タイトル画面の更新処理
+			break;
+		case ModeState::GameOverMode:
+			// ゲームオーバー画面の更新処理
+			DrawString(500, 500, "Game Over", GetColor(255, 0, 0));
+			if (input.IsMousePressed(InputValidation::Mouse::Left))
+			{
+				// ゲームオーバー画面でEnterキーが押された場合、ゲームを再起動する
+				gameScene.InitGame(selectMode, SCREENWIDTH, SCREENHEIGHT);
+				modestate = ModeState::GameMode;
+			}
+			break;
+		}
 		//DrawCustomFPS(10, 10);
 		DrawFormatString(10, 10, GetColor(255, 255, 255), "FPS: %.2f", GetFPS());
 

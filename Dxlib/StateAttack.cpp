@@ -2,89 +2,91 @@
 #include "StateIdle.h"
 #include "StateRun.h"
 #include "Player.h"
-#include"Field.h"
-#include"InputValidation.h"
-#include"ICharacterState.h"
+#include "Field.h"
+#include "InputValidation.h"
+#include "IController.h"
+#include"Player.h"
+StateAttack::StateAttack(int attackIndex, bool isParryAttempt)
+{
+    comboStep = attackIndex;
+    isNextComboRequested = false;
+    stepForwardSpeed = 0.0f;
+
+}
 
 void StateAttack::OnEnter(Character& character, const GameContext& context)
 {
-    // 1. 近接攻撃フラグを立てて大剣を構えさせる
     character.SetIsMeleeAttacking(true);
-        // 2. 指定された攻撃アニメーションを単発再生でセット
-    character.SetAnimation(static_cast<int>(Character::CharacterStateID::Attack1), false);
-    // 3. 攻撃開始時の前進（踏み込み）速度を設定（コンボ段階に応じて調整可）
+    character.SetHasHitTarget(false);
+
+    // キャラクター本体のコンボ段数も同期
+    character.SetComboStep(comboStep);
+
+    // 相手への向き直し処理
+    if (context.player && &character != context.player)
+    {
+        VECTOR myPos = character.GetPos();
+        VECTOR playerPos = context.player->GetPos();
+        VECTOR diff = VSub(playerPos, myPos);
+        diff.y = 0.0f;
+
+        if (VSize(diff) > 0.001f)
+        {
+            float targetAngle = atan2f(diff.x, diff.z) + DX_PI_F;
+            character.SetAngle(targetAngle);
+        }
+    }
+	//攻撃時に前方に移動するための初期速度を設定
+    if (isParryAttempt)
+    {
+        context.player->SetParryTimer(0.25f);
+    }
+    
+        // comboStep に対応するアニメーションを取得して再生
+        Character::CharacterStateID animID = character.GetAttackAnimID(comboStep);
+        character.SetAnimation(static_cast<int>(animID), false);
+
+    
+    
     stepForwardSpeed = 2.0f;
 }
 
 void StateAttack::Update(Character& character, const GameContext& context)
 {
-    // アニメーション再生率を取得（0.0f 〜 1.0f）
-    float normTime = character.GetAnimState().GetNormalizedTime();
-
-    if (stepForwardSpeed > 0.0f&& (normTime >= 0.3f && normTime <= 0.5f))
+    float timer = context.player->GetParryTimer();
+    if (timer > 0.0f) 
     {
-        // 前方に踏み込む移動処理
-        MATRIX rotMat = MGetRotY(character.GetAngle());
-        VECTOR forwardVec = VTransform(VGet(0.0f, 0.0f, -1.0f), rotMat); // モデルの正面方向
-        VECTOR moveOffset = VScale(forwardVec, stepForwardSpeed);
-
-        VECTOR currentPos = character.GetPos();
-        VECTOR finalPos = context.field->WallCollision(currentPos, moveOffset);
-        currentPos.x = finalPos.x;
-        currentPos.z = finalPos.z;
-        character.SetPos(currentPos);
-
-        // 徐々に減速
-        //stepForwardSpeed -= 15.0f * deltaTime;
-        if (stepForwardSpeed < 0.0f) stepForwardSpeed = 0.0f;
+        // deltaTimeがミリ秒なら / 1000.0f、秒ならそのまま
+        context.player->SetParryTimer(timer - context.deltaTime);
     }
-    // アニメーションの30%〜80%の間で次の攻撃入力を受け付ける
-    if (normTime >= 0.3f && normTime <= 0.8f)
+
+    CommandState cmd = character.GetController()->GetCommand(character, context);
+
+    // ★ 1. 攻撃動作中に一度でも入力があれば、先行入力フラグを true で保持（予約）する
+    if (cmd.isAttack)
     {
-        if (context.input->IsMouseTrigger(InputValidation::Mouse::Left) ||
-            context.input->IsButtonTrigger(XINPUT_BUTTON_X))
+        isNextComboRequested = true;
+    }
+   
+    // ★ 2. アニメーション終了時にコンボ派生判定
+    if (character.GetIsAnimationEnd())
+    {
+        // 予約があり、かつ最大コンボ段数未満なら次の段（comboStep + 1）へ派生！
+        if (isNextComboRequested && comboStep < character.GetMaxComboSteps())
         {
-            isNextComboRequested = true;
+            character.ChangeState(std::make_unique<StateAttack>(comboStep + 1), context);
         }
-    }
-
-    //コンボ派生判定（アニメーション終盤で入力があれば次の段へ） 
-
-    if (normTime > 0.9f && isNextComboRequested)
-    {// 次のコンボ段階へ遷移
-        int nextComboStep = comboStep + 1;
-        Character::CharacterStateID nextAttackState = Character::CharacterStateID::Attack1;
-        switch (nextComboStep)
+        else
         {
-        case 2:
-            nextAttackState = Character::CharacterStateID::Attack2;
-            break;
-        case 3:
-            nextAttackState = Character::CharacterStateID::Attack3;
-            break;
-        case 4:
-            nextAttackState = Character::CharacterStateID::Attack4;
-            break;
-        default:
-            // コンボが最大段階に達した場合は Idle に戻す
+            // コンボ終了時は Idle へ戻り、コンボ段数をリセット
+            character.ResetComboStep();
             character.ChangeState(std::make_unique<StateIdle>(), context);
-            return;
         }
-
-        // 次の攻撃状態に遷移
-        character.ChangeState(std::make_unique<StateAttack>(nextComboStep, nextAttackState), context);
     }
-    else
-    {
-		// 攻撃アニメーションが終了したら Idle に戻す
-		if (character.GetIsAnimationEnd())
-		{
-			character.ChangeState(std::make_unique<StateIdle>(), context);
-		}
-    }
-
 }
-void StateAttack::OnExit(Character & character, const GameContext & context)
+
+void StateAttack::OnExit(Character& character, const GameContext& context)
 {
-        character.SetIsMeleeAttacking(false);
+    character.SetIsMeleeAttacking(false);
+	context.player->ClearParryTimer();
 }

@@ -14,8 +14,6 @@ void StateDamage::OnEnter(Character& owner, const GameContext& context)
 
 void StateDamage::Update(Character& owner, const GameContext& context)
 {
-    float deltatime;
-	deltatime = owner.GetDeltaTime();
     // 1. ノックバック移動（後ろ方向に減速しながら移動）
     if (knockbackSpeed > 0.0f)
     {
@@ -23,11 +21,11 @@ void StateDamage::Update(Character& owner, const GameContext& context)
         VECTOR forwardVec = VTransform(VGet(0.0f, 0.0f, -1.0f), rotMat); // 正面ベクトル
         VECTOR backwardVec = VScale(forwardVec, -1.0f);                  // 後方ベクトル
 
-        VECTOR moveOffset = VScale(backwardVec, knockbackSpeed * deltatime);
+        VECTOR moveOffset = VScale(backwardVec, knockbackSpeed * context.deltaTime);
         owner.SetPos(VAdd(owner.GetPos(), moveOffset));
 
         // 徐々に減速
-        knockbackSpeed -= 500.0f * deltatime;
+        knockbackSpeed -= 500.0f * context.deltaTime;
         if (knockbackSpeed < 0.0f) knockbackSpeed = 0.0f;
     }
 

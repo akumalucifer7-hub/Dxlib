@@ -9,6 +9,7 @@
 #include"InputValidation.h"
 #include"GameContext.h"
 #include "Animator.h"
+#include "UserInterface.h"
 class GameScene
 {
 public:
@@ -16,6 +17,7 @@ public:
 
 	void UpdateGame(InputValidation& input, int SCREENWIDTH, int SCREENHEIGHT);
 	void DrawGame();
+	bool GetIsGameOver() const { return isGameOver; }
 
 private:
 	std::vector<GameObject*> gameObjects;
@@ -27,9 +29,11 @@ private:
 	Player player;
 	Field field;
 	Villain villain;
+	GameUI gameUI;
 	InputValidation inputValidation;
 	Animator animator;
 	int ShadowMapHandle;
 	VECTOR lightDir;
 	bool isDebugDrawMode;
+	bool isGameOver = false;
 };

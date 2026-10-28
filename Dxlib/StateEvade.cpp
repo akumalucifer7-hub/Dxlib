@@ -51,7 +51,6 @@ void StateEvade::OnEnter(Character& character, const GameContext& context)
 
 void StateEvade::Update(Character& character, const GameContext& context)
 {
-    float deltaTime = character.GetDeltaTime(); // または context から取得
     float normTime = character.GetAnimNormalizedTime();
 
     // --- 1. 高速移動と減衰処理 ---
@@ -66,20 +65,20 @@ void StateEvade::Update(Character& character, const GameContext& context)
         character.SetPos(currentPos);
 
         // フレーム経過とともに減速
-        evadeSpeed -= 25.0f * deltaTime;
+        evadeSpeed -= 25.0f * context.deltaTime;
         if (evadeSpeed < 0.0f) evadeSpeed = 0.0f;
     }
 
     // --- 2. 無敵区間の制御 ---
     // 例: アニメーションの 10% 〜 60% の間のみ無敵を付与
-   /* if (normTime >= 0.1f && normTime <= 0.6f)
+    if (normTime >= 0.1f && normTime <= 0.6f)
     {
-        player.SetIsInvincible(true);
+        character.SetIsInvincible(true);
     }
     else
     {
-        player.SetIsInvincible(false);
-    }*/
+        character.SetIsInvincible(false);
+    }
 
 
     // --- 4. 回避終了判定 ---

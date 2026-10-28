@@ -3,6 +3,7 @@
 #include "StateJump.h"
 #include "StateAttack.h"
 #include "StateDamage.h"
+#include"StateFall.h"
 #include "Character.h"
 #include "IController.h"
 
@@ -24,9 +25,7 @@ void StateIdle::Update(Character& owner, const GameContext& context)
 
     CommandState cmd = controller->GetCommand(owner, context);
 
-    // -------------------------------------------------------------
     // ステート遷移判定（優先度順）
-    // -------------------------------------------------------------
 
     // 1. 被弾判定 (最優先)
     if (cmd.isDamaged)
@@ -53,7 +52,9 @@ void StateIdle::Update(Character& owner, const GameContext& context)
     // 4. 攻撃判定
     if (cmd.isAttack)
     {
-        owner.ChangeState(std::make_unique<StateAttack>(1), context);
+        bool hasDirectionInput = (cmd.moveX != 0.0f || cmd.moveY != 0.0f);
+
+        owner.ChangeState(std::make_unique<StateAttack>(1, hasDirectionInput), context);
         return;
     }
 
@@ -62,6 +63,11 @@ void StateIdle::Update(Character& owner, const GameContext& context)
     {
         owner.ChangeState(std::make_unique<StateRun>(), context);
         return;
+    }
+    //6. 落下判定
+    if (!owner.GetIsGround())
+    {
+        owner.ChangeState(std::make_unique<StateFall>(), context);
     }
 }
 

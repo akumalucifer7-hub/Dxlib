@@ -1,21 +1,47 @@
+// AIController.h
+
 #pragma once
 #include "IController.h"
-
-// 前方向宣言（循環参照を防止）
-class Character;
-struct GameContext;
+#include "DxLib.h"
 
 class AIController : public IController
 {
 public:
-    AIController(float attackRange = 30.0f, float attackInterval = 1.5f);
+    enum class AIMode
+    {
+        Idle,
+        Approach,
+        Attack,
+        KeepDistance,
+        CoolingDown
+    };
+
+    enum class KeepDistType
+    {
+        Back,       // 後退
+        StrafeLeft, // 左移動
+        StrafeRight,// 右移動
+        Watch       // 敵対対象の観察
+    };
+
+    AIController();
+    ~AIController() override = default;
 
     CommandState GetCommand(const Character& owner, const GameContext& context) const override;
 
 private:
-    float attackRange;      // 間合い（攻撃に移行する距離）
-    float attackInterval;   // 攻撃のクールダウン時間
+    mutable AIMode currentMode = AIMode::Idle;
+    mutable float stateTimer = 0.0f;
+    mutable float attackCooldown = 0.0f;
 
-    // const メンバ関数内からの更新を許可するために mutable を付与
-    mutable float attackTimer = 0.0f;
+    // ★ 牽制行動のバリエーション管理用変数
+    mutable KeepDistType currentKeepType = KeepDistType::Back;
+    mutable float keepTypeTimer = 0.0f; // 牽制パターンの切替タイマー
+
+    const float detectionRange = 150.0f;
+    const float attackRange = 10.0f;
+    const float keepDistMin = 15.0f;
+
+    void UpdateAIMode(const Character& owner, const GameContext& context, float distToPlayer) const;
+    void UpdateKeepDistanceBehavior(float deltaTime) const;
 };

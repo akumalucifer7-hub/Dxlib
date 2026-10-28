@@ -1,5 +1,5 @@
 #include "GameScene.h"
-
+#include"UserInterface.h"
 void GameScene::InitGame(int selectMode, int SCREENWIDTH, int SCREENHEIGHT)
 {
 
@@ -63,7 +63,7 @@ void GameScene::UpdateGame(InputValidation& input, int SCREENWIDTH, int SCREENHE
 	{
 		obj->Update(context);
 	}
-
+	CharacterCollision::ResolveCharacterCollisions(player, villain, context);
 	// GetNowCount() はミリ秒単位で時間を取得する関数です
 	while (GetNowCount() - StartTime < 16)
 	{
@@ -75,6 +75,12 @@ void GameScene::UpdateGame(InputValidation& input, int SCREENWIDTH, int SCREENHE
 	{
 		isDebugDrawMode = true;
 	}
+	if (player.GetHP() <= 0.0f||villain.GetHP() <= 0.0f)
+	{
+		// プレイヤーのHPが0以下になった場合の処理
+		isGameOver = true;
+	}
+
 }
 
 void GameScene::DrawGame() 
@@ -113,8 +119,11 @@ void GameScene::DrawGame()
 	int drawX = (1980 - textWidth) / 2;
 	int drawY = 20;
 
+	bool isBossBattle = true; // ボス戦フラグ (仕様③の切り替え用)
+	gameUI.Draw(context, isBossBattle);
+
 	DrawString(drawX, drawY, posText, GetColor(255, 0, 0));
-	if (player.GetIsHit())
+	if (villain.GetIsHit())
 	{
 		DrawString(260, 500, "Hit!", GetColor(255, 0, 0));
 	}
@@ -122,7 +131,7 @@ void GameScene::DrawGame()
 	{
 		DrawString(260, 500, "Not Hit!", GetColor(0, 255, 0));
 	}
-	if( villain.GetIsHit() )
+	if(player.GetIsHit())
 	{
 		DrawString(260, 550, "Villain Hit!", GetColor(255, 0, 0));
 	}

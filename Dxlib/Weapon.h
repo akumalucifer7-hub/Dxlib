@@ -9,6 +9,8 @@ class Weapon
 		void AttachWeapon(int playerModelHandle, const char* FrameName, float offsetX, float offsetY, float offsetZ, float rotX, float rotY, float rotZ);
 		void DrawWeapon();
 		int GetModelHandle() const { return weaponModel1; }
+
+
 	private:
 
 		int weaponModel1;

@@ -3,6 +3,10 @@
 #include "StateDamage.h"
 #include "GameContext.h"
 #include "Field.h"
+#include"Player.h"
+#include"Villain.h"
+Character::Character() = default;
+Character::~Character() = default; // ここでデフォルトデストラクタを生成[cite: 17]
 
 // --- 当たり判定関数の共通実装 ---
 
@@ -23,19 +27,27 @@ void Character::DrawDebug()
 
 void Character::OnTakeDamage(const GameContext& context)
 {
-    if (!isInvincible && currentStateID != CharacterStateID::Damage1)
+    if (!isInvincible )
     {
         ChangeState(std::make_unique<StateDamage>(), context);
     }
 }
+// --- 攻撃関連の共通実装 ---
+Character::CharacterStateID Character::GetAttackAnimID(int comboStep) const
+{
+    switch (comboStep)
+    {
+    case 1: return CharacterStateID::Attack1;
+    case 2: return CharacterStateID::Attack2;
 
+    default: return CharacterStateID::Attack1;
+    }
+}
 // --- その他の共通更新処理 ---
 
 void Character::Update(const GameContext& context)
 {
-    deltaTime = CalculateDeltaTime();
 
-    UpdatePhysics(context);
 
     if (currentState)
     {
@@ -51,9 +63,16 @@ void Character::Update(const GameContext& context)
             animstate,
             currentAnimID,
             isAnimLoop,
-            deltaTime
+            context.deltaTime
         );
     }
+    UpdatePhysics(context);
+    // プレイヤー vs 敵の衝突・パリィ・ダメージを一括解決
+    if (context.player && context.villain)
+    {
+        CharacterCollision::ResolveCharacterCollisions(*context.player, *context.villain, context);
+    }
+
 }
 
 void Character::ChangeState(std::unique_ptr<ICharacterState> newState, const GameContext& context)
@@ -63,7 +82,7 @@ void Character::ChangeState(std::unique_ptr<ICharacterState> newState, const Gam
         currentState->OnExit(*this, context);
     }
 
-    currentState = std::move(newState);
+    currentState = std::move(newState); 
 
     if (currentState)
     {
