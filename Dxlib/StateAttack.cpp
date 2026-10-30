@@ -5,13 +5,14 @@
 #include "Field.h"
 #include "InputValidation.h"
 #include "IController.h"
-#include"Player.h"
+#include "AudioManager.h"
+
 StateAttack::StateAttack(int attackIndex, bool isParryAttempt)
 {
     comboStep = attackIndex;
     isNextComboRequested = false;
     stepForwardSpeed = 0.0f;
-
+    AudioManager::Instance().Play("Attack", DX_PLAYTYPE_BACK);
 }
 
 void StateAttack::OnEnter(Character& character, const GameContext& context)

@@ -2,7 +2,7 @@
 #include"UserInterface.h"
 void GameScene::InitGame(int selectMode, int SCREENWIDTH, int SCREENHEIGHT)
 {
-
+	isGameOver = false;
 	switch (selectMode)
 	{
 	case 0:

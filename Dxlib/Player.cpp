@@ -6,19 +6,28 @@
 Player::~Player() = default;
 void Player::Init(const GameContext& context)
 {
+
+    // 旧モデルの削除
+    if (modelHandle != -1)
+    {
+        MV1DeleteModel(modelHandle);
+        modelHandle = -1;
+    }
+
+    //アニメーション状態のリセット
+    animstate = Animstate();
+
     modelHandle = MV1LoadModel("Assets/3Dmodel/natsuki_karin_mmd_vrm/夏色花梨.pmx");
     centerFrameIndex = MV1SearchFrame(modelHandle, "センター");
-
     SwordItems.InitWeapon("Assets/3Dmodel/weapons/匙式大直剣/匙式大直剣.pmx", "グリップ1");
     GunItemsRight.InitWeapon("Assets/3Dmodel/weapons/DesertEagle_MMD/DesertEagle.pmx", "全ての親");
     GunItemsLeft.InitWeapon("Assets/3Dmodel/weapons/DesertEagle_MMD/DesertEagle.pmx", "全ての親");
 
     MV1SetLoadModelUsePhysicsMode(DX_LOADMODEL_PHYSICS_REALTIME);
     GunItemsLeft.SetShapes("ステンレス", 1.0f);
+	Character::SetHP(maxHP); // 初期HPを設定
 
-    // -------------------------------------------------------------
     // 当たり判定 (Collision) の初期化
-    // -------------------------------------------------------------
     // 1. 被弾用 AABB (Hurtbox) のローカルサイズ設定
     collision.SetLocalHurtbox({
         VGet(-3.0f, 0.0f, -2.5f), // 最小座標 (Min)
@@ -31,7 +40,7 @@ void Player::Init(const GameContext& context)
         static_cast<int>(CharacterStateID::Attack1),
         {
             0.2f, 0.5f, // 発生時間 (開始 20% ? 終了 50%)
-            { VGet(-20.0f, 0.0f, 0.0f), VGet(20.0f, 10.0f, -20.0f) } // ローカル AABB 範囲
+            { VGet(-15.0f, 0.0f, 0.0f), VGet(20.0f, 10.0f, -15.0f) } // ローカル AABB 範囲
         }
     );
 
@@ -40,7 +49,7 @@ void Player::Init(const GameContext& context)
         static_cast<int>(CharacterStateID::Attack2),
         {
             0.2f, 0.6f,
-            { VGet(-25.0f, 0.0f, 0.0f), VGet(25.0f, 10.0f, -25.0f) }
+            { VGet(-15.0f, 0.0f, 0.0f), VGet(15.0f, 10.0f, -15.0f) }
         }
     );
 	// Attack3 (コンボ3段目)
@@ -48,7 +57,7 @@ void Player::Init(const GameContext& context)
 		static_cast<int>(CharacterStateID::Attack3),
 		{
 			0.2f, 0.7f,
-			{ VGet(-25.0f, 0.0f, 0.0f), VGet(25.0f, 10.0f, -25.0f) }
+			{ VGet(-15.0f, 0.0f, 0.0f), VGet(15.0f, 10.0f, -15.0f) }
 		}
 	);
 	// Attack4 (コンボ4段目)
@@ -56,7 +65,7 @@ void Player::Init(const GameContext& context)
 		static_cast<int>(CharacterStateID::Attack4),
 		{
 			0.2f, 0.8f,
-			{ VGet(-20.0f, 0.0f, 0.0f), VGet(0.0f, 0.0f, -70.0f) }
+			{ VGet(-10.0f, 0.0f, 0.0f), VGet(10.0f, 10.0f, -15.0f) }
 		}
 	);
 

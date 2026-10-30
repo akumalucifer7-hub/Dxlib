@@ -69,6 +69,7 @@ public:
 	float GetDeltaTime() const { return deltaTime; }
 	float GetHP() const { return HP; }
 	float GetMaxHP() const { return maxHP; }
+	void SetHP(float newHP) { HP = newHP; }
 	int GetLevel() const { return CharacterLevel; }
 	int GetAttackPower() const { return AttackPower; }
     bool GetIsAnimationEnd() const { return animstate.isAnimationEnd; }
@@ -78,6 +79,8 @@ public:
 protected:
     void UpdatePhysics(const GameContext& context);
     void UpdateTransform();
+
+
 
     CharacterStateID currentStateID = CharacterStateID::Idle;
     std::unique_ptr<ICharacterState> currentState;

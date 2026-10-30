@@ -159,6 +159,7 @@
     <ClInclude Include="AIController.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AttackHitbox.h" />
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="CharacterCollision.h" />

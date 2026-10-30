@@ -1,6 +1,7 @@
 #include "StateDamage.h"
 #include "StateIdle.h"
 #include "Character.h"
+#include "AudioManager.h"
 
 void StateDamage::OnEnter(Character& owner, const GameContext& context)
 {
@@ -10,6 +11,7 @@ void StateDamage::OnEnter(Character& owner, const GameContext& context)
 
     // 2. 被弾アニメーションを単発再生
     owner.SetAnimation(static_cast<int>(Character::CharacterStateID::Damage1), false);
+	AudioManager::Instance().Play("Hit", DX_PLAYTYPE_BACK);
 }
 
 void StateDamage::Update(Character& owner, const GameContext& context)

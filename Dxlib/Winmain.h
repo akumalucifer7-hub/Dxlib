@@ -1,20 +1,13 @@
 #pragma once
 
 #include "DxLib.h"
-#include <cmath>
-#include <algorithm>
-#include"GameScene.h"
-#include"InputValidation.h"
-GameScene gameScene;
-InputValidation& inputValidation = InputValidation::Instance();
+#include "GameScene.h"
+#include "InputValidation.h"
 
+// シーン（モード）状態の定義
 enum class ModeState
 {
-	GameMode,
-	TitleMode,
-	GameOverMode
+    TitleMode,
+    GameMode,
+    GameOverMode
 };
-
-ModeState modestate = ModeState::GameMode;
-
-InputValidation input;

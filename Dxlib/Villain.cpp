@@ -6,14 +6,26 @@
 Villain ::~Villain() = default;
 void Villain::Init(const GameContext& context)
 {
+    // 旧モデルの削除
+    if (modelHandle != -1)
+    {
+        MV1DeleteModel(modelHandle);
+        modelHandle = -1;
+    }
+
+    //アニメーション状態のリセット
+    animstate = Animstate();
+
+
     MV1SetLoadModelUsePhysicsMode(DX_LOADMODEL_PHYSICS_DISABLE);
     modelHandle = MV1LoadModel("Assets/3Dmodel/koharu_rikka_natsufuku_mmd_vrm/KoharuRikka_Natsufuku.pmx");
     centerFrameIndex = MV1SearchFrame(modelHandle, "センター");
+
 	pos = VGet(0.0f, 0.0f, 0.0f);
     weapon1.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
     weapon2.InitWeapon("Assets/3Dmodel/weapons/でっかいマチェット/でっかいマチェット.pmx", "センター");
+    Character::SetHP(maxHP); // 初期HPを設定
 
-    // 当たり判定 (Collision) の初期化
     
     // 1. 被弾用 AABB (Hurtbox) 設定
     collision.SetLocalHurtbox({

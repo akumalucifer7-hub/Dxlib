@@ -45,6 +45,13 @@ Character::CharacterStateID Character::GetAttackAnimID(int comboStep) const
 }
 // --- その他の共通更新処理 ---
 
+void Character::Init(const GameContext& context)
+{
+	// キャラクターの初期化処理
+	// モデルのロード、アニメーションの設定などを行う
+	SetHP(maxHP); // 初期HPを設定
+
+}
 void Character::Update(const GameContext& context)
 {
 

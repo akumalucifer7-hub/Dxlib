@@ -16,36 +16,39 @@ void CharacterCollision::ResolveCharacterCollisions(Character& player, Character
 
     // 1. 敵の攻撃 vs プレイヤーの被弾判定
     AABB villainAttackAABB;
-    if (CheckAABBOverlap(villainAttackAABB, player.GetHurtboxAABB()))
+    // ★ 敵が現在攻撃判定を出しているかのチェック（GetCurrentAttackAABB）を追加
+    if (villain.GetCurrentAttackAABB(villainAttackAABB))
     {
-        if (!villain.GetHasHitTarget())
+        if (CheckAABBOverlap(villainAttackAABB, player.GetHurtboxAABB()))
         {
-            villain.SetHasHitTarget(true);
+            player.SetIsHit(true);
 
-            Player* pPlayer = dynamic_cast<Player*>(&player);
-            if (pPlayer && pPlayer->GetParryTimer() > 0.0f)
+            if (!villain.GetHasHitTarget())
             {
-                // ★パリィ成功
-                pPlayer->ClearParryTimer();
+                villain.SetHasHitTarget(true);
 
-                // 敵の方向へ向き直る
-                VECTOR diff = VSub(villain.GetPos(), player.GetPos());
-                diff.y = 0.0f;
-                if (VSize(diff) > 0.001f)
+                Player* pPlayer = dynamic_cast<Player*>(&player);
+                if (pPlayer && pPlayer->GetParryTimer() > 0.0f)
                 {
-                    player.SetAngle(atan2f(diff.x, diff.z) + DX_PI_F);
-                }
+                    // パリィ成功処理
+                    pPlayer->ClearParryTimer();
 
-                // 攻撃動作を中断して StateParry（弾きモーション）へ遷移
-                player.ChangeState(std::make_unique<StateParry>(), context);
-            }
-            else if (!player.GetIsInvincible())
-            {
-                player.OnTakeDamage(context);
+                    VECTOR diff = VSub(villain.GetPos(), player.GetPos());
+                    diff.y = 0.0f;
+                    if (VSize(diff) > 0.001f)
+                    {
+                        player.SetAngle(atan2f(diff.x, diff.z) + DX_PI_F);
+                    }
+
+                    player.ChangeState(std::make_unique<StateParry>(), context);
+                }
+                else if (!player.GetIsInvincible())
+                {
+                    player.OnTakeDamage(context);
+                }
             }
         }
     }
-
 
     // 2. プレイヤーの攻撃 vs 敵の被弾判定
     AABB playerAttackAABB;
@@ -57,7 +60,7 @@ void CharacterCollision::ResolveCharacterCollisions(Character& player, Character
                 villain.GetCurrentStateID() != Character::CharacterStateID::Damage1)
             {
                 villain.OnTakeDamage(context);
-				villain.SetIsHit(true);
+                villain.SetIsHit(true);
             }
         }
     }

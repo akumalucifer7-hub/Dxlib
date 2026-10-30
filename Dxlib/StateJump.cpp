@@ -15,7 +15,7 @@ void StateJump::OnEnter(Character& character, const GameContext& context)
 	//  離陸直後の誤着地判定を防ぐため、接地フラグを解除し位置を少しだけ浮かせる
 	character.SetIsGround(false);
 	VECTOR currentPos = character.GetPos();
-	currentPos.y += 3.5f;
+	currentPos.y += 1.5f;
 	character.SetPos(currentPos);
 }
 

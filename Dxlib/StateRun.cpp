@@ -7,7 +7,7 @@
 #include "Character.h"
 #include "IController.h"
 #include "Field.h"
-
+#include "AudioManager.h"
 
 void StateRun::OnEnter(Character& owner, const GameContext& context)
 {
@@ -80,8 +80,11 @@ void StateRun::Update(Character& owner, const GameContext& context)
     currentPos.z = finalPos.z;
 
     owner.SetPos(currentPos);
+    AudioManager::Instance().Play("Run", DX_PLAYTYPE_LOOP);
+
 }
 
 void StateRun::OnExit(Character& owner, const GameContext& context)
 {
+    AudioManager::Instance().Stop("Run");   
 }
