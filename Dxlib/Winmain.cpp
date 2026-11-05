@@ -34,7 +34,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     // 3. ゲーム管理変数 & シーン初期化
     GameScene gameScene;
-    ModeState modeState = ModeState::GameMode;
+    ModeState modeState = ModeState::TitleMode;
     InputValidation& input = InputValidation::Instance();
     GameContext context;
 
@@ -69,6 +69,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         {
         case ModeState::TitleMode:
             // TODO: タイトル描画・更新
+            DrawString(screenWidth / 2 - 50, screenHeight / 2, "Title", GetColor(255, 0, 0));
+			DrawString(screenWidth / 2 - 120, screenHeight / 2 + 30, "Click Left Mouse to Start", GetColor(255, 255, 255));
+            
+            // 左クリックでゲーム開始
+            if (input.IsMouseTrigger(InputValidation::Mouse::Left))
+            {
+                modeState = ModeState::GameMode;
+            } 
             break;
 
         case ModeState::GameMode:

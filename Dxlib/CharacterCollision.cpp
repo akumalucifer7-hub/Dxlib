@@ -14,9 +14,7 @@ void CharacterCollision::ResolveCharacterCollisions(Character& player, Character
     player.SetIsHit(false);
     villain.SetIsHit(false);
 
-    // 1. 敵の攻撃 vs プレイヤーの被弾判定
     AABB villainAttackAABB;
-    // ★ 敵が現在攻撃判定を出しているかのチェック（GetCurrentAttackAABB）を追加
     if (villain.GetCurrentAttackAABB(villainAttackAABB))
     {
         if (CheckAABBOverlap(villainAttackAABB, player.GetHurtboxAABB()))
@@ -30,9 +28,10 @@ void CharacterCollision::ResolveCharacterCollisions(Character& player, Character
                 Player* pPlayer = dynamic_cast<Player*>(&player);
                 if (pPlayer && pPlayer->GetParryTimer() > 0.0f)
                 {
-                    // パリィ成功処理
+                    // 1. パリィ成功・タイマーリセット
                     pPlayer->ClearParryTimer();
 
+                    // 2. プレイヤーを敵の方向へ向かせる
                     VECTOR diff = VSub(villain.GetPos(), player.GetPos());
                     diff.y = 0.0f;
                     if (VSize(diff) > 0.001f)
@@ -40,7 +39,15 @@ void CharacterCollision::ResolveCharacterCollisions(Character& player, Character
                         player.SetAngle(atan2f(diff.x, diff.z) + DX_PI_F);
                     }
 
+                    // 3. プレイヤーを Parry ステートへ変更
                     player.ChangeState(std::make_unique<StateParry>(), context);
+
+                    // 敵の攻撃判定を強制終了し、攻撃フラグを折る
+                    villain.SetIsMeleeAttacking(false);
+                    villain.SetHasHitTarget(true); // 残存Hitboxの無効化
+
+                    // ★ 敵側を被弾/怯みステート（StateDamage等）へ強制遷移させて攻撃を完全に叩き落とす
+                    villain.OnTakeDamage(context);
                 }
                 else if (!player.GetIsInvincible())
                 {
