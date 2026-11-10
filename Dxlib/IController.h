@@ -14,6 +14,7 @@ struct CommandState
     bool isJump = false;    // ジャンプ要求
 	bool isSpecial = false; // 特殊行動要求
 	bool isDamaged = false;  // 被弾要求
+	bool isGunAttack = false; // ガン攻撃要求
 };
 
 class IController

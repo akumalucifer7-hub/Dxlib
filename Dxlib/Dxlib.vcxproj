@@ -145,6 +145,7 @@
     <ClCompile Include="StateDamage.cpp" />
     <ClCompile Include="StateEvade.cpp" />
     <ClCompile Include="StateFall.cpp" />
+    <ClCompile Include="StateGunAttack.cpp" />
     <ClCompile Include="StateIdle.cpp" />
     <ClCompile Include="StateJump.cpp" />
     <ClCompile Include="StateParry.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AttackHitbox.h" />
     <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="CharacterCollision.h" />
@@ -179,6 +181,7 @@
     <ClInclude Include="StateDamage.h" />
     <ClInclude Include="StateEvade.h" />
     <ClInclude Include="StateFall.h" />
+    <ClInclude Include="StateGunAttack.h" />
     <ClInclude Include="StateIdle.h" />
     <ClInclude Include="StateJump.h" />
     <ClInclude Include="StateParry.h" />

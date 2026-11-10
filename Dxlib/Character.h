@@ -16,7 +16,7 @@ public:
     Character();
     enum class CharacterStateID
     {
-        Idle, Run, Jump, Fall, Attack1, Attack2, Attack3, Attack4, Evade, Damage1, Parry, MAX
+        Idle, Run, Jump, Fall, Attack1, Attack2, Attack3, Attack4, Evade, Damage1, Parry, GunAttack, MAX
     };
 
     virtual ~Character();

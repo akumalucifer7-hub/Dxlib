@@ -10,7 +10,7 @@ void StateJump::OnEnter(Character& character, const GameContext& context)
 	character.SetAnimation(static_cast<int>(Character::CharacterStateID::Jump), false);
 	
 	// ジャンプ開始時の初期速度を設定
-	character.SetVelocityY(12.5f); // 例: 上方向に12.5fの速度を与える
+	character.SetVelocityY(9.0f); // 例: 上方向に9.0fの速度を与える
 
 	//  離陸直後の誤着地判定を防ぐため、接地フラグを解除し位置を少しだけ浮かせる
 	character.SetIsGround(false);

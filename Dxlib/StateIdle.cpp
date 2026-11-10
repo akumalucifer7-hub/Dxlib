@@ -69,6 +69,12 @@ void StateIdle::Update(Character& owner, const GameContext& context)
     {
         owner.ChangeState(std::make_unique<StateFall>(), context);
     }
+	//7. ガン攻撃判定
+    if (cmd.isGunAttack)
+    {
+		owner.ChangeState(std::make_unique<GunAttackState>(), context);
+		return;
+    }
 }
 
 void StateIdle::OnExit(Character& owner, const GameContext& context)

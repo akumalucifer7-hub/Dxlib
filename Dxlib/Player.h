@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include"Weapon.h"
+
 class Player : public Character
 {
 public:
@@ -28,12 +29,13 @@ public:
 	void SetParryTimer(float time) { parryTimer = time; }
 	float GetParryTimer() const { return parryTimer; }
 	void ClearParryTimer() { parryTimer = 0.0f; }
-
+	Weapon& GetRightGun() { return GunItemsRight; }
+	Weapon& GetLeftGun() { return GunItemsLeft; }
 private:
  
 	Weapon SwordItems;
 	Weapon GunItemsRight;
 	Weapon GunItemsLeft;
-
+	
 	float parryTimer = 0.5f; // パリィ受付タイマー
 };

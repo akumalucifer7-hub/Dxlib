@@ -13,6 +13,7 @@ void Weapon::InitWeapon( const TCHAR* ModelSource, const TCHAR* HandleFrame)
 	{
 		WeaponGripInvMat = MGetIdent();
 	}
+	MuzzleBoneIndex = MV1SearchFrame(weaponModel1, "ПeМы");
 }
 void Weapon::SetShapes(const TCHAR* Shapename,float ShapeRate)
 {
@@ -69,3 +70,4 @@ void Weapon::DrawWeapon()
 		DrawString(260, 300, "Item Model Load Failed", GetColor(255, 0, 0));
 	}
 }	
+

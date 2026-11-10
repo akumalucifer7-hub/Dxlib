@@ -71,12 +71,16 @@ CommandState PlayerController::GetCommand(const Character& owner, const GameCont
 
     // 特殊行動 (Shiftキー または XInput Yボタン)
     if (input.IsKeyTrigger(KEY_INPUT_LSHIFT) ||
-        input.IsButtonTrigger(XINPUT_BUTTON_Y))
+        input.IsButtonTrigger(XINPUT_BUTTON_DPAD_RIGHT))
     {
         cmd.isSpecial = true;
     }
-
-
+	//火器による攻撃 (右クリック または XInput RightTrigger)
+	if (input.IsMouseTrigger(InputValidation::Mouse::Right) ||
+		input.IsButtonTrigger(XINPUT_BUTTON_Y))
+	{
+		cmd.isGunAttack = true;
+	}
 
     return cmd;
 }
