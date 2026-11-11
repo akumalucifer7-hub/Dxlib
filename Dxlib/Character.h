@@ -48,6 +48,14 @@ public:
     VECTOR GetPos() const { return pos; }
     void SetPos(const VECTOR& newPos) { pos = newPos; }
     float GetAngle() const { return angle; }
+    // キャラクターの現在の正面方向（水平・正規化済み）を取得
+    VECTOR GetForwardVector() const
+    {
+        // angle（Y軸回転）から正面方向を計算（DxLibの標準座標系に合わせる）
+        // ※ プレイヤーの回転仕様に合わせて sinf / cosf の符号を調整してください
+        VECTOR forward = VGet(sinf(angle), 0.0f, cosf(angle));
+        return VNorm(forward);
+    }
     void SetAngle(float newAngle) { angle = newAngle; }
 	bool GetIsGround() const { return isGround; }
 	void SetIsGround(bool ground) { isGround = ground; }

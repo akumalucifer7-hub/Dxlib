@@ -13,4 +13,5 @@ public:
 
 private:
     bool hasFired = false; // 二重発射防止フラグ
+	bool isNextAttackRequested = false; // 次の攻撃への遷移要求フラグ
 };

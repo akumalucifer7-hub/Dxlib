@@ -71,3 +71,36 @@ void Weapon::DrawWeapon()
 	}
 }	
 
+// 銃口からの水平な発射方向を取得（プレイヤーの正面向きで補正）
+VECTOR Weapon::GetMuzzleForwardVector(float playerAngle) const
+{
+	if (weaponModel1 == -1 || MuzzleBoneIndex == -1)
+	{
+		// ボーンが見つからない場合はプレイヤーの向きから水平に飛ばす
+		return VNorm(VGet(sinf(playerAngle), 0.0f, cosf(playerAngle)));
+	}
+
+	// 銃口ボーンの行列を取得
+	MATRIX muzzleMat = MV1GetFrameLocalWorldMatrix(weaponModel1, MuzzleBoneIndex);
+
+	// ボーンの方向ベクトル（Z軸成分）を取得
+	VECTOR dir = VGet(muzzleMat.m[2][0], muzzleMat.m[2][1], muzzleMat.m[2][2]);
+
+	// ★ 1. 上下への傾きをカットして「平行（水平）」にする
+	dir.y = 0.0f;
+
+	// ★ 2. プレイヤーの正面方向と内積を取り、逆向き（背中側）を向いていたら反転させる
+	VECTOR playerForward = VGet(sinf(playerAngle), 0.0f, cosf(playerAngle));
+	if (VDot(dir, playerForward) < 0.0f)
+	{
+		dir = VScale(dir, -1.0f); // 逆向きなら反転
+	}
+
+	// ベクトルがゼロベクトル（真上・真下を向いていた場合など）でなければ正規化
+	if (VSize(dir) < 0.001f)
+	{
+		dir = playerForward;
+	}
+
+	return VNorm(dir);
+}

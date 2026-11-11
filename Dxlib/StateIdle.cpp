@@ -6,7 +6,7 @@
 #include"StateFall.h"
 #include "Character.h"
 #include "IController.h"
-
+#include"StateGunAttack.h"
 void StateIdle::OnEnter(Character& owner, const GameContext& context)
 {
     // 1. フラグの初期化

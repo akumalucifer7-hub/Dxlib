@@ -80,6 +80,8 @@ void GameScene::UpdateGame(InputValidation& input, int SCREENWIDTH, int SCREENHE
 		// プレイヤーのHPが0以下になった場合の処理
 		isGameOver = true;
 	}
+	// メインの Update ループ内
+	BulletManager::Instance().Update(context);
 
 }
 
@@ -107,6 +109,8 @@ void GameScene::DrawGame()
 	{
 		obj->Draw();
 	}
+	// メインの Draw ループ内
+	BulletManager::Instance().Draw();
 	if (SetHighMode)
 	{
 		SetUseShadowMap(0, -1);

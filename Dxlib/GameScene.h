@@ -10,6 +10,7 @@
 #include"GameContext.h"
 #include "Animator.h"
 #include "UserInterface.h"
+#include"Bullet.h"
 class GameScene
 {
 public:

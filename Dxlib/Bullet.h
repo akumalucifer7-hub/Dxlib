@@ -33,7 +33,7 @@ public:
         b.pos = startPos;
         b.velocity = VScale(VNorm(direction), speed);
         b.lifeTime = 2.0f; // 2秒間生存
-        b.radius = 1.0f;
+        b.radius = 0.01f;
         b.isActive = true;
         bullets.push_back(b);
     }

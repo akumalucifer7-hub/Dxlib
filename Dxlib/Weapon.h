@@ -1,6 +1,6 @@
 #pragma once
 #include"DxLib.h"
-
+#include<cmath>
 class Weapon
 {
 	public:
@@ -10,6 +10,9 @@ class Weapon
 		void DrawWeapon();
 		int GetModelHandle() const { return weaponModel1; }
 		VECTOR GetPos() const { return WEAPON01pos; }
+        VECTOR GetMuzzleForwardVector(float playerAngle) const;
+
+
         // 銃口のワールド行列を取得
         MATRIX GetMuzzleWorldMatrix() const
         {
