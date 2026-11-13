@@ -3,7 +3,7 @@
 #include "DxLib.h"
 #include "GameScene.h"
 #include "InputValidation.h"
-
+#include "EffekseerForDXLib.h"
 // シーン（モード）状態の定義
 enum class ModeState
 {

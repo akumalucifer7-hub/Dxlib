@@ -136,6 +136,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="CharacterCollision.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="InputValidation.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DebugColor.h" />
     <ClInclude Include="DebugRenderer.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="GameContext.h" />
     <ClInclude Include="GameObject.h" />

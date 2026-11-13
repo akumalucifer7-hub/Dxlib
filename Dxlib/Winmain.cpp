@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <windows.h>
 #include"AudioManager.h"
+#include "EffectManager.h"
+
 #pragma warning(disable: C4819)
 using namespace DxLib;
 
@@ -27,9 +29,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     SetUseCharSet(DX_CHARSET_UTF8);
     SetGraphMode(screenWidth, screenHeight, 32);
     SetUse3DFlag(TRUE);
-
+    SetUseDirect3DVersion(DX_DIRECT3D_11);
     if (DxLib_Init() == -1) return -1;
-
+    
+    if (!EffectManager::Instance().Init(8000))
+    {
+        DxLib_End();
+        return -1;
+    }
+    EffectManager::Instance().Load("MuzzleFlash", "Assets/Effects/muzzle_flash.efkefc", 1.0f);
     SetDrawScreen(DX_SCREEN_BACK);
 
     // 3. ゲーム管理変数 & シーン初期化
@@ -115,6 +123,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     // 5. 終了処理
+    EffectManager::Instance().Finalize();
+    Effkseer_End();
     DxLib_End();
     return 0;
 }
