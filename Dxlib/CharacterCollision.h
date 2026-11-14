@@ -43,5 +43,8 @@ public:
 
 private:
     AABB localHurtbox = { VGet(-3.0f, 0.0f, -2.5f), VGet(3.0f, 20.0f, 2.5f) }; // デフォルト値
+    static VECTOR CalculateHitPosition(const AABB& a, const AABB& b);
     std::unordered_map<int, AttackHitboxData> hitboxTable;
+
+
 };

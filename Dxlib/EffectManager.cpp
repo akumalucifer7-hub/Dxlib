@@ -1,10 +1,5 @@
 #include "EffectManager.h"
 
-EffectManager& EffectManager::Instance()
-{
-	static EffectManager instance;
-	return instance;
-}
 
 bool EffectManager::Init(int maxParticles)
 {

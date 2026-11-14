@@ -11,6 +11,7 @@
 #include "Animator.h"
 #include "UserInterface.h"
 #include"Bullet.h"
+#include "EffectManager.h"
 class GameScene
 {
 public:

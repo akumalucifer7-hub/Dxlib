@@ -111,6 +111,7 @@ void GameScene::DrawGame()
 	}
 	// ƒƒCƒ“‚Ì Draw ƒ‹[ƒv“à
 	BulletManager::Instance().Draw();
+	EffectManager::Instance().Draw();
 	if (SetHighMode)
 	{
 		SetUseShadowMap(0, -1);

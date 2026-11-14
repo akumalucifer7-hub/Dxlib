@@ -79,7 +79,7 @@ public:
         );
     }
 
-    // 簡易描画（黄色の直線 / 球体）
+    // 簡易描画（オレンジ色の直線 / 球体）
     void Draw() const
     {
         for (const auto& b : bullets)
@@ -87,7 +87,7 @@ public:
             if (!b.isActive) continue;
             VECTOR tailPos = VSub(b.pos, VScale(VNorm(b.velocity), 3.0f)); // 軌跡
             DrawLine3D(b.pos, tailPos, GetColor(255, 220, 100));
-            DrawSphere3D(b.pos, b.radius, 8, GetColor(255, 255, 200), GetColor(255, 200, 0), TRUE);
+            DrawSphere3D(b.pos, b.radius, 8, GetColor(255, 255, 200), GetColor(255, 100, 0), TRUE);
         }
     }
 

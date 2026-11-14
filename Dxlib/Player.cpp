@@ -40,7 +40,7 @@ void Player::Init(const GameContext& context)
         static_cast<int>(CharacterStateID::Attack1),
         {
             0.2f, 0.5f, // 発生時間 (開始 20% ? 終了 50%)
-            { VGet(-15.0f, 0.0f, 0.0f), VGet(20.0f, 10.0f, -15.0f) } // ローカル AABB 範囲
+            { VGet(-15.0f, 0.0f, 0.0f), VGet(20.0f, 16.0f, -15.0f) } // ローカル AABB 範囲
         }
     );
 
@@ -49,7 +49,7 @@ void Player::Init(const GameContext& context)
         static_cast<int>(CharacterStateID::Attack2),
         {
             0.2f, 0.6f,
-            { VGet(-15.0f, 0.0f, 0.0f), VGet(15.0f, 10.0f, -15.0f) }
+            { VGet(-15.0f, 0.0f, 0.0f), VGet(15.0f, 16.0f, -15.0f) }
         }
     );
 	// Attack3 (コンボ3段目)
@@ -57,7 +57,7 @@ void Player::Init(const GameContext& context)
 		static_cast<int>(CharacterStateID::Attack3),
 		{
 			0.2f, 0.7f,
-			{ VGet(-15.0f, 0.0f, 0.0f), VGet(15.0f, 10.0f, -15.0f) }
+			{ VGet(-15.0f, 0.0f, 0.0f), VGet(15.0f, 16.0f, -15.0f) }
 		}
 	);
 	// Attack4 (コンボ4段目)
@@ -65,7 +65,7 @@ void Player::Init(const GameContext& context)
 		static_cast<int>(CharacterStateID::Attack4),
 		{
 			0.2f, 0.8f,
-			{ VGet(-10.0f, 0.0f, 0.0f), VGet(10.0f, 10.0f, -15.0f) }
+			{ VGet(-10.0f, 0.0f, 0.0f), VGet(10.0f, 16.0f, -15.0f) }
 		}
 	);
 

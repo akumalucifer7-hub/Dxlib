@@ -2,17 +2,14 @@
 #include "StateIdle.h"
 #include "Character.h"
 #include "StateFall.h"
-#include"ICharacterState.h"
+#include "ICharacterState.h"
+#include "IController.h" // 追加
+#include "Field.h"       // 追加
 
 void StateJump::OnEnter(Character& character, const GameContext& context)
 {
-	// Jumpアニメーションの再生設定
 	character.SetAnimation(static_cast<int>(Character::CharacterStateID::Jump), false);
-	
-	// ジャンプ開始時の初期速度を設定
-	character.SetVelocityY(9.0f); // 例: 上方向に9.0fの速度を与える
-
-	//  離陸直後の誤着地判定を防ぐため、接地フラグを解除し位置を少しだけ浮かせる
+	character.SetVelocityY(9.0f);
 	character.SetIsGround(false);
 	VECTOR currentPos = character.GetPos();
 	currentPos.y += 1.5f;
@@ -21,25 +18,47 @@ void StateJump::OnEnter(Character& character, const GameContext& context)
 
 void StateJump::Update(Character& character, const GameContext& context)
 {
-	// --- 空中攻撃の割り込み判定 ---
-	
 	// --- 状態遷移判定 ---
-	// 頂点に達し、Y軸速度が下向きになったら落下状態へ遷移
 	if (character.GetVelocityY() < 0.0f)
 	{
 		character.ChangeState(std::make_unique<StateFall>(), context);
 		return;
 	}
 
-	// 天井にぶつかる等で即座に着地した場合
 	if (character.GetVelocityY() <= 0.0f && character.GetIsGround())
 	{
 		character.ChangeState(std::make_unique<StateFall>(), context);
 		return;
 	}
+
+	// --- 空中移動処理 ---
+	if (const IController* controller = character.GetController())
+	{
+		CommandState cmd = controller->GetCommand(character, context);
+		float squareLength = cmd.moveX * cmd.moveX + cmd.moveY * cmd.moveY;
+
+		// 入力がある場合のみ移動
+		if (squareLength >= 0.001f)
+		{
+			VECTOR moveVec = VNorm(VGet(cmd.moveX, 0.0f, cmd.moveY));
+
+			// 向きの更新
+			character.SetAngle(atan2f(moveVec.x, moveVec.z) + DX_PI_F);
+
+			// 移動処理（空中での移動速度は Run と同じ 1.5f に設定。必要に応じて調整してください）
+			float moveSpeed = 1.5f;
+			VECTOR moveOffset = VScale(moveVec, moveSpeed);
+
+			VECTOR currentPos = character.GetPos();
+			VECTOR finalPos = context.field->WallCollision(currentPos, moveOffset);
+			currentPos.x = finalPos.x;
+			currentPos.z = finalPos.z;
+
+			character.SetPos(currentPos);
+		}
+	}
 }
 
 void StateJump::OnExit(Character& character, const GameContext& context)
 {
-	// ジャンプ状態終了時の処理（特になければ空で問題ありません）
 }

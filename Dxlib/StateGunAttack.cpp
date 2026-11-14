@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "AudioManager.h"
 #include "Bullet.h"
+#include "EffectManager.h"
 
 void GunAttackState::OnEnter(Character& owner, const GameContext& context)
 {
@@ -23,7 +24,6 @@ void GunAttackState::Update(Character& owner, const GameContext& context)
 
     Player* pPlayer = dynamic_cast<Player*>(&owner);
     float normTime = owner.GetAnimNormalizedTime();
-
     if (!hasFired && normTime >= 0.35f)
     {
         if (pPlayer)
@@ -42,6 +42,13 @@ void GunAttackState::Update(Character& owner, const GameContext& context)
             BulletManager::Instance().SpawnBullet(muzzlePos1, forwardDir, 180.0f);
             BulletManager::Instance().SpawnBullet(muzzzlePos2, forwardDir, 180.0f);
 
+            AudioManager::Instance().Play("GunShot", DX_PLAYTYPE_BACK);
+
+            float effectRotY = angle + DX_PI_F;
+            EffectManager::Instance().Play("MuzzleFlash", muzzlePos1, effectRotY, 1.0f);
+            EffectManager::Instance().Play("MuzzleFlash", muzzzlePos2, effectRotY, 1.0f);   
+
+            // SE再生
             AudioManager::Instance().Play("GunShot", DX_PLAYTYPE_BACK);
             hasFired = true;
         }

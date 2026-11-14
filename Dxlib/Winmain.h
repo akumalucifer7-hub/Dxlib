@@ -9,5 +9,6 @@ enum class ModeState
 {
     TitleMode,
     GameMode,
-    GameOverMode
+    GameOverMode,
+    ExitMode
 };

@@ -55,31 +55,49 @@ void StateAttack::OnEnter(Character& character, const GameContext& context)
 void StateAttack::Update(Character& character, const GameContext& context)
 {
     float timer = context.player->GetParryTimer();
-    if (timer > 0.0f) 
+    if (timer > 0.0f)
     {
-        // deltaTimeがミリ秒なら / 1000.0f、秒ならそのまま
         context.player->SetParryTimer(timer - context.deltaTime);
     }
 
+    if (stepForwardSpeed > 0.0f)
+    {
+        VECTOR pos = character.GetPos();
+        float angle = character.GetAngle();
+
+        // キャラクターの向いている方向へ移動
+        pos.x += -sinf(angle) * stepForwardSpeed;
+        pos.z += -cosf(angle) * stepForwardSpeed;
+
+        // 速度を徐々に落とす（摩擦）
+        stepForwardSpeed *= 0.85f; // 
+        if (stepForwardSpeed < 0.01f)
+        {
+            stepForwardSpeed = 0.0f;
+        }
+
+        // 移動後の座標をセット
+        character.SetPos(pos);
+    }
+  
+
     CommandState cmd = character.GetController()->GetCommand(character, context);
 
-    // ★ 1. 攻撃動作中に一度でも入力があれば、先行入力フラグを true で保持（予約）する
+    // 1. 攻撃動作中に一度でも入力があれば、先行入力フラグを true で保持（予約）する
     if (cmd.isAttack)
     {
         isNextComboRequested = true;
     }
-   
-    // ★ 2. アニメーション終了時にコンボ派生判定
+
+    // 2. アニメーション終了時にコンボ派生判定
     if (character.GetIsAnimationEnd())
     {
-        // 予約があり、かつ最大コンボ段数未満なら次の段（comboStep + 1）へ派生！
         if (isNextComboRequested && comboStep < character.GetMaxComboSteps())
         {
             character.ChangeState(std::make_unique<StateAttack>(comboStep + 1), context);
         }
         else
         {
-            // コンボ終了時は Idle へ戻り、コンボ段数をリセット
             character.ResetComboStep();
             character.ChangeState(std::make_unique<StateIdle>(), context);
         }

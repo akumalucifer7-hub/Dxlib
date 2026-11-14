@@ -8,12 +8,12 @@
 #include "DebugColor.h"
 #include"IController.h"
 #include"Player.h"
-
+#include"EffectManager.h"
 void CharacterCollision::ResolveCharacterCollisions(Character& player, Character& villain, const GameContext& context)
 {
     player.SetIsHit(false);
     villain.SetIsHit(false);
-
+    VECTOR hitPos;
     AABB villainAttackAABB;
     if (villain.GetCurrentAttackAABB(villainAttackAABB))
     {
@@ -24,7 +24,7 @@ void CharacterCollision::ResolveCharacterCollisions(Character& player, Character
             if (!villain.GetHasHitTarget())
             {
                 villain.SetHasHitTarget(true);
-
+                 hitPos = CalculateHitPosition(villainAttackAABB, player.GetHurtboxAABB());
                 Player* pPlayer = dynamic_cast<Player*>(&player);
                 if (pPlayer && pPlayer->GetParryTimer() > 0.0f)
                 {
@@ -51,6 +51,7 @@ void CharacterCollision::ResolveCharacterCollisions(Character& player, Character
                 }
                 else if (!player.GetIsInvincible())
                 {
+                    EffectManager::Instance().Play("HitSlash", hitPos, villain.GetAngle(), 1.0f);
                     player.OnTakeDamage(context);
                 }
             }
@@ -66,6 +67,8 @@ void CharacterCollision::ResolveCharacterCollisions(Character& player, Character
             if (!villain.GetIsInvincible() &&
                 villain.GetCurrentStateID() != Character::CharacterStateID::Damage1)
             {
+                hitPos = CalculateHitPosition(playerAttackAABB, villain.GetHurtboxAABB());
+                EffectManager::Instance().Play("HitSlash", hitPos, player.GetAngle(), 1.0f);
                 villain.OnTakeDamage(context);
                 villain.SetIsHit(true);
             }
@@ -131,4 +134,24 @@ void CharacterCollision::DrawDebug(const Character& owner) const
         unsigned int color = owner.GetIsHit() ? DebugColor::ActiveHit : DebugColor::Hitbox;
         DebugRenderer::DrawAABB(attackAABB, color);
     }
+}
+
+ VECTOR CharacterCollision::CalculateHitPosition(const AABB& a, const AABB& b)
+{
+    // X, Y, Z 各軸で重なっている範囲（Overlap）の最小・最大を求める
+    float minX = (a.min.x > b.min.x) ? a.min.x : b.min.x;
+    float maxX = (a.max.x < b.max.x) ? a.max.x : b.max.x;
+
+    float minY = (a.min.y > b.min.y) ? a.min.y : b.min.y;
+    float maxY = (a.max.y < b.max.y) ? a.max.y : b.max.y;
+
+    float minZ = (a.min.z > b.min.z) ? a.min.z : b.min.z;
+    float maxZ = (a.max.z < b.max.z) ? a.max.z : b.max.z;
+
+    // 重なり領域の中心点をヒット座標とする
+    return VGet(
+        minX + (maxX - minX) * 0.5f,
+        minY + (maxY - minY) * 0.5f,
+        minZ + (maxZ - minZ) * 0.5f
+    );
 }
